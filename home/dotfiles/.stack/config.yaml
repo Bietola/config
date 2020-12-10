@@ -1,0 +1,4 @@
+# Should be true only for nixos
+nix:
+    enable: true
+    packages: [zlib]
