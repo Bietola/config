@@ -10,29 +10,17 @@ let
     rev = "e3828769e877b1869129a3816515a8c0ea454977";
   };
 
-  # `machineConf` contains machine-specific settings
-  # machineName = builtins.readFile ./machine/machine;
-  # machineConf = import ./machine/${machineName}.nix;
-  machineConf = import ./machine/richard.nix;
-  hardwareConf = machineConf.hardware;
-
   mkHome = import ./home/core.nix;
 in
 
 {
   imports =
     [ # Include the results of the hardware scan.
-      hardwareConf
+      ./hardware-configuration.nix
       
-      # TODO: Try this: Boot config
-      # machineConf.boot
-
       # Home manager
       (import "${home-manager}/nixos")
     ];
-
-  # TODO: TEMP: Try as an import
-  boot = machineConf.boot;
 
   # Home manager configuration
   # TODO handle differences with function
@@ -51,6 +39,11 @@ in
       homeDirectory = "/home/dincio";
     };
   };
+
+  # Use the systemd-boot EFI boot loader.
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
+  # TODO: enable os-prober
 
   networking.hostName = "richard"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -128,9 +121,6 @@ in
   environment.systemPackages = with pkgs; [
     # Everything is managed by home-manager!
   ];
-
-  # Kill Luke Smith
-  services.flatpak.enable = true;
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
