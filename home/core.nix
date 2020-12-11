@@ -36,7 +36,7 @@
 
     # Browsers
     firefox
-    # TODO qutebrowser
+    # TODO: fix broken package: qutebrowser
     transmission-gtk
 
     # Media
@@ -104,6 +104,13 @@
     shellAliases = {
       # Hacks
       sudo = "sudo ";
+
+      # Automated way to edit automated config
+      edit-config-sys = "sudo $EDITOR /etc/nixos/configuration.nix";
+      edit-config-home = "sudo $EDITOR /etc/nixos/home/core.nix";
+      edit-config-todo = "sudo $EDITOR /etc/nixos/todo.md";
+      # TODO: make this work without nvim
+      edit-pkgs-home = "sudo nvim -c '/\\<home\\.packages\\>' /etc/nixos/home/core.nix";
 
       # Better defaults
       ls = "ls --color=auto";
