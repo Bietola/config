@@ -10,13 +10,18 @@ let
     rev = "e3828769e877b1869129a3816515a8c0ea454977";
   };
 
+  # The machine contains a single line specifying which file (in the hardware folder)
+  # should be used to import the hardware configuration
+  machine = builtins.readFile ./machine;
+  hardware-configuration = import ./hardware/richard-win-vb.nix;
+
   mkHome = import ./home/core.nix;
 in
 
 {
   imports =
     [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
+      hardware-configuration
       
       # Home manager
       (import "${home-manager}/nixos")
