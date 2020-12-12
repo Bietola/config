@@ -14,7 +14,6 @@ let
   # machineName = builtins.readFile ./machine/machine;
   # machineConf = import ./machine/${machineName}.nix;
   machineConf = import ./machine/richard.nix;
-  hardwareConf = machineConf.hardware;
 
   mkHome = import ./home/core.nix;
 in
@@ -22,10 +21,10 @@ in
 {
   imports =
     [ # Include the results of the hardware scan.
-      hardwareConf
+      machineConf.hardware
       
       # TODO: Try this: Boot config
-      # machineConf.boot
+      machineConf.boot
 
       # Home manager
       (import "${home-manager}/nixos")

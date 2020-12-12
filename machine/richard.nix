@@ -4,26 +4,54 @@
 { config, lib, pkgs, modulesPath, ... }:
 
 {
-  imports =
-    [ (modulesPath + "/installer/scan/not-detected.nix")
+  hardware = { config, lib, pkgs, modulesPath, ... }: {
+    imports =
+      [ (modulesPath + "/installer/scan/not-detected.nix")
     ];
 
-  boot.initrd.availableKernelModules = [ "xhci_pci" "nvme" "usb_storage" "sd_mod" "rtsx_pci_sdmmc" ];
-  boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ "kvm-intel" ];
-  boot.extraModulePackages = [ ];
+    boot.initrd.availableKernelModules = [ "xhci_pci" "nvme" "usb_storage" "sd_mod" "rtsx_pci_sdmmc" ];
+    boot.initrd.kernelModules = [ ];
+    boot.kernelModules = [ "kvm-intel" ];
+    boot.extraModulePackages = [ ];
 
-  fileSystems."/" =
-    { device = "/dev/disk/by-uuid/17bc6ab7-3162-40d4-a9ef-95d749a41b3d";
+    fileSystems."/" =
+      { device = "/dev/disk/by-uuid/17bc6ab7-3162-40d4-a9ef-95d749a41b3d";
       fsType = "ext4";
     };
 
-  fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/A444-A4D7";
+    fileSystems."/boot" =
+      { device = "/dev/disk/by-uuid/A444-A4D7";
       fsType = "vfat";
     };
 
-  swapDevices = [ ];
+    swapDevices = [ ];
 
-  powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
+    powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
+  };
+
+  bootLoader = {
+    # Use the systemd-boot EFI boot loader.
+    boot.loader.systemd-boot.enable = true;
+    boot.loader.efi.canTouchEfiVariables = true;
+    # TODO: enable os-prober
+  };
+
+  keyboard = {
+    # Configure keymap in X11
+    services.xserver.layout = "it";
+    services.xserver.displayManager.sessionCommands =
+      let
+        myCustomLayout = pkgs.writeText "xkb-layout" ''
+          ! Get ~ and ´
+          keycode  51 = ugrave 96 ugrave 96 asciitilde asciitilde asciitilde
+
+          ! Swap caps lock with escape for all vimlike things
+          ! TODO: Make this work w/ windows caps lock remapping
+          remove Lock = Caps_Lock
+          keysym Escape = Caps_Lock
+          keysym Caps_Lock = Escape
+          add Lock = Caps_Lock
+        '';
+      in "${pkgs.xorg.xmodmap}/bin/xmodmap ${myCustomLayout}";
+  };
 }
