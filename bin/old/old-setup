@@ -1,0 +1,80 @@
+#/bin/sh
+
+NIXOS_CONFIG_FOLDER="/etc/nixos"
+NIXOS_HARDWARE_CONF="$NIXOS_CONFIG_FOLDER/hardware-configuration.nix"
+
+#############
+# Functions #
+#############
+
+function safelink {
+    LINK_TO="$1"
+    LINK_FROM="$2"
+
+    # Do not link and give warning if file already exists
+    if [[ -e "$LINK_TO" ]]; then
+        echo "ERR: $LINK_TO already exists as a real file. Please remove it so that the"
+        echo "ERR: $LINK_FROM -> $LINK_TO symlink can take place"
+        
+        exit 1 # Error
+    fi
+
+    # Forcefully override old symlinks
+    if [[ -h "$LINK_TO" ]]; then
+        OLD_LINK_FROM=$("readlink -f $LINK_TO")
+        echo "WARNING: Overriding old symlink: from $OLD_LINK_FROM -> $LINK_TO to $LINK_FROM -> $LINK_TO"
+    fi
+
+    # Do it
+    ln -s "$LINK_FROM" "$LINK_TO"
+}
+
+##########
+# Script #
+##########
+
+# TODO: Check for sudo
+
+if [[ ! -e "$NIXOS_CONFIG_FOLDER/machine/machine" ]]; then
+    echo "machine needs to be specified in machine file (at $NIXOS_CONFIG_FOLDER/machine/machine)"
+
+    exit 1
+fi
+
+# Current machine specified at following path
+MACHINE="$(cat $NIXOS_CONFIG_FOLDER/machine/machine)"
+MACHINE_FOLDER="$NIXOS_CONFIG_FOLDER/machine/$MACHINE"
+MACHINE_HARDWARE_CONF="$MACHINE_FOLDER/hardware-configuration.nix"
+MACHINE_EXTRA_CONF="$MACHINE_FOLDER/extra-configuration.nix"
+
+# Check for proper directory structure
+if [[ ! -e "$MACHINE_HARDWARE_CONF" ]]; then
+    echo "ERR: hardware-configuration.nix file missing for $MACHINE machine."
+    echo "ERR: Should be at $MACHINE_HARDWARE_CONF"
+
+    exit 1
+fi
+if [[ -e "$MACHINE_EXTRA_CONF" ]]; then
+    echo "WARNING: Loading extra configuration for $MACHINE"
+    echo "WARNING: This because extra conf file detected at $MACHINE_EXTRA_CONF"
+fi
+
+# Safelink hardware-configuration.nix
+if [[ $(safelink "$MACHINE_HARDWARE_CONF" "$NIXOS_HARDWARE_CONF") -eq 1 ]]; then
+    echo "hello"
+fi
+# if [[ -e "$NIXOS_HARDWARE_CONF" ]]; then
+#     echo "Concrete hardware-configuration.nix file already in place at $NIXOS_CONFIG_FOLDER. Please remove it to"
+#     echo "permit symlink with "
+
+#     exit 1
+# elif [[ -h "$NIXOS_HARDWARE_CONF" ]]; then
+#     fixlink
+# else
+    
+# fi
+
+# Run nixos-rebuild with proper symlinks in place
+nixos-rebuild switch
+
+# TODO: Do extra configuration here

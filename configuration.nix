@@ -5,33 +5,41 @@
 { config, pkgs, ... }:
 
 let
+  # TODO: move this in utils file
+  # TODO: make the machine file a yaml file and parse it
+  removeNewline = str:
+  let len = builtins.stringLength str;
+      len-1 = builtins.sub len 1;
+      lastChar = builtins.substring len-1 len str;
+    in if lastChar == "\n"
+      then builtins.substring 0 len-1 str
+      else str;
+
   home-manager = builtins.fetchGit {
     url = "https://github.com/rycee/home-manager.git";
     rev = "e3828769e877b1869129a3816515a8c0ea454977";
   };
 
   # `machineConf` contains machine-specific settings
-  # machineName = builtins.readFile ./machine/machine;
-  # machineConf = import ./machine/${machineName}.nix;
-  machineConf = import ./machine/richard.nix;
+  machineName = removeNewline (builtins.readFile ./machine/machine);
+  machineConf = import "/etc/nixos/machine/${machineName}.nix";
+  # machineConf = import ./machine/richard-win-vb.nix;
 
   mkHome = import ./home/core.nix;
 in
 
 {
   imports =
-    [ # Include the results of the hardware scan.
-      machineConf.hardware
+    [ # Include the results of the hardware scan
+      ./hardware-configuration.nix
       
-      # TODO: Try this: Boot config
-      machineConf.boot
+      # Machine-specific configuration
+      machineConf.bootLoader
+      machineConf.keyboard
 
       # Home manager
       (import "${home-manager}/nixos")
     ];
-
-  # TODO: TEMP: Try as an import
-  boot = machineConf.boot;
 
   # Home manager configuration
   # TODO handle differences with function
@@ -61,7 +69,7 @@ in
   # Per-interface useDHCP will be mandatory in the future, so this generated config
   # replicates the default behaviour.
   networking.useDHCP = false;
-  # networking.interfaces.enp0s3.useDHCP = true;
+  networking.interfaces.enp0s3.useDHCP = true;
 
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
@@ -88,23 +96,6 @@ in
       xmonad.enable = true;
     };
   };
-
-  # Configure keymap in X11
-  services.xserver.layout = "it";
-  services.xserver.displayManager.sessionCommands =
-    let
-      myCustomLayout = pkgs.writeText "xkb-layout" ''
-        ! Get ~ and ´
-        keycode  51 = ugrave 96 ugrave 96 asciitilde asciitilde asciitilde
-
-        ! Swap caps lock with escape for all vimlike things
-        ! TODO: Make this work w/ windows caps lock remapping
-        remove Lock = Caps_Lock
-        keysym Escape = Caps_Lock
-        keysym Caps_Lock = Escape
-        add Lock = Caps_Lock
-      '';
-    in "${pkgs.xorg.xmodmap}/bin/xmodmap ${myCustomLayout}";
 
   # Enable CUPS to print documents.
   # services.printing.enable = true;

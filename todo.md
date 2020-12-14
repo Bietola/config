@@ -6,6 +6,7 @@
 
 ## Other things
 
+1. Try this branch on richard
 3. Write brightness changing script
 4. Create nix package for hindent (which is broken in nixpkgs)
 5. Find out why xsession in home-manager dactivates caps lock remapping in configuration.nix
