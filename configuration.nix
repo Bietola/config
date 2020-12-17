@@ -5,25 +5,14 @@
 { config, pkgs, ... }:
 
 let
-  # TODO: move this in utils file
-  # TODO: make the machine file a yaml file and parse it
-  removeNewline = str:
-  let len = builtins.stringLength str;
-      len-1 = builtins.sub len 1;
-      lastChar = builtins.substring len-1 len str;
-    in if lastChar == "\n"
-      then builtins.substring 0 len-1 str
-      else str;
-
   home-manager = builtins.fetchGit {
     url = "https://github.com/rycee/home-manager.git";
     rev = "e3828769e877b1869129a3816515a8c0ea454977";
   };
 
   # `machineConf` contains machine-specific settings
-  machineName = removeNewline (builtins.readFile ./machine/machine);
+  machineName = (import ./machine/machine.nix).machine;
   machineConf = import "/etc/nixos/machine/${machineName}.nix";
-  # machineConf = import ./machine/richard-win-vb.nix;
 
   mkHome = import ./home/core.nix;
 in

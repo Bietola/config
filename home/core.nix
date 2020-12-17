@@ -1,5 +1,32 @@
 { pkgs, username, homeDirectory }:
 
+############################
+# Custom package snapshots #
+############################
+# NB. These are a necessary evil for when a version of a package,
+#     which is not included in the nixpkgs repository, is needed.
+#
+#     This issue: https://github.com/NixOS/nixpkgs/issues/93327 explains
+#     the needed procedure.
+#
+#     Package version search tool: https://lazamar.co.uk/nix-versions/?channel=nixpkgs-unstable&package=haskell-language-server
+#
+# TODO Maybe make a streamlined function for this?
+
+let custom-ver-pkgs = {
+  # Haskell Language Server
+  hls = let pkgsSnapshot = import (builtins.fetchGit {
+      name = "custom hls version";
+      url = "https://github.com/nixos/nixpkgs-channels/";
+      ref = "refs/heads/nixpkgs-unstable";                     
+      rev = "2c162d49cd5b979eb66ff1653aecaeaa01690fcc";
+    }) {}; in pkgsSnapshot.haskellPackages.haskell-language-server;
+  # hls = pkgs.haskellPackages.haskell-language-server;
+};
+
+in
+
+# Start of config set
 {
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
@@ -57,7 +84,7 @@
     # emacs # TODO: Setup doom emacs
     boxes
     # TODO haskellPackages.hindent
-    haskellPackages.haskell-language-server
+    # TODO Older version used below: haskellPackages.haskell-language-server
 
     # Programming
     stack
@@ -72,7 +99,12 @@
 
     # Poli
     alloy5
-  ];
+  ] ++
+
+  # Packages with custom version (See start of file)
+  (with custom-ver-pkgs; [
+    # TODO: hls
+  ]);
 
   ############
   # XSession #

@@ -1,2 +1,2 @@
-machine/machine
+machine/machine.nix
 hardware-configuration.nix
