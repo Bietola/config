@@ -16,7 +16,7 @@
 let custom-ver-pkgs = {
   # Haskell Language Server
   hls = let pkgsSnapshot = import (builtins.fetchGit {
-      name = "custom hls version";
+      name = "custom-hls-version";
       url = "https://github.com/nixos/nixpkgs-channels/";
       ref = "refs/heads/nixpkgs-unstable";                     
       rev = "2c162d49cd5b979eb66ff1653aecaeaa01690fcc";
@@ -103,7 +103,7 @@ in
 
   # Packages with custom version (See start of file)
   (with custom-ver-pkgs; [
-    # TODO: hls
+    hls
   ]);
 
   ############

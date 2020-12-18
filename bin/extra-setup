@@ -74,7 +74,7 @@ function error() {
 }
 
 function backup() {
-    echo "Warning: BU not implemented yet"
+    # TODO: Implement backup
 }
 
 # Buffed symlink function
@@ -140,6 +140,8 @@ function lncfg() {
     if [[ -h "$dest" ]]; then
         # Symlink is already there and points to the correct destination
         old_orig=$(readlink -f "$dest")
+        [[ -z "$old_orig" ]] && old_orig="<INVALID_SYMLINK>"
+
         if [[ "$old_orig" == "$orig" ]]; then
             echo "Nothing to be done for $unit_name"
         # Destination is wrong...
@@ -152,6 +154,7 @@ function lncfg() {
             else
                 echo "Skipping $unit_name: destination config path already contains symlink to other file: $old_orig"
                 echo "NB.: use -f flag to force update to $orig"
+                echo "!!!WARNING!!!: BU is not implemented yet; forcing will lead to the loss of the ovewritten file"
             fi
         fi
     # Don't do anything if a config unit is already present at destination
@@ -253,7 +256,7 @@ function lncfge() {
 # qutebrowser quickmarks
 # TODO: Do not rely on flatpak
 # TODO: Without flatpak: lncfge :c qutebrowser/quickmarks
-lncfge :f ".var/app/org.qutebrowser.qutebrowser/config/qutebrowser/quickmarks"
+# TODO: Fix this link: lncfge :f ".var/app/org.qutebrowser.qutebrowser/config/qutebrowser/quickmarks"
 
 # ranger
 lncfge :c ranger
