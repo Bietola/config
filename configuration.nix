@@ -86,12 +86,19 @@ in
     };
   };
 
-  # Enable CUPS to print documents.
+  # Enable CUPS to print documents
   # services.printing.enable = true;
 
-  # Enable sound.
+  # For easy bluetooth with blueman-applet and blueman-manager
+  # TODO: Remove if bluetoothctl works: services.blueman.enable = true;
+
+  # Enable sound
   sound.enable = true;
   hardware.pulseaudio.enable = true;
+
+  # For bluetooth headphones support
+  hardware.bluetooth.enable = true;
+  hardware.pulseaudio.package = pkgs.pulseaudioFull;
 
   # Enable touchpad support (enabled default in most desktopManager).
   services.xserver.libinput.enable = true;
@@ -99,7 +106,7 @@ in
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.dincio = {
     isNormalUser = true;
-    extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
+    extraGroups = [ "wheel" "docker" ];
   };
 
   # List packages installed in system profile. To search, run:
@@ -109,7 +116,11 @@ in
   ];
 
   # Kill Luke Smith
+  # NOTE: Actually not needed anymore
   services.flatpak.enable = true;
+
+  # Enable docker
+  virtualisation.docker.enable = true;
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.

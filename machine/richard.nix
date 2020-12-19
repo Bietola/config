@@ -6,7 +6,7 @@
     # TODO: enable os-prober
   };
 
-  keyboard = { pkgs, ... }: {
+  keyboard = { lib, pkgs, ... }: {
     # Configure keymap in X11
     services.xserver.layout = "it";
     services.xserver.displayManager.sessionCommands =

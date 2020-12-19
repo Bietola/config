@@ -75,6 +75,7 @@ function error() {
 
 function backup() {
     # TODO: Implement backup
+    :
 }
 
 # Buffed symlink function
@@ -115,6 +116,10 @@ function lncfg() {
     # Determine destination of config unit
     case "$dest_specifier" in
         # Parse shorthands
+        ":fp")
+            FLATPAK_CONFIG_LOCATION="$3"
+            dest="$USR_HOME/$FLATPAK_CONFIG_LOCATION/$unit_name"
+            ;;
         ":h")
             dest="$USR_HOME/$unit_name"
             ;;
@@ -253,10 +258,11 @@ function lncfge() {
 # AKA: Things that can't be managed with home-manager, and are thus managed separately
 # AKA: The only useful section...
 
+# qutebrowser with flatpak (left as demonstration)
+# lncfge :fp "qutebrowser/quickmarks" ".var/app/org.qutebrowser.qutebrowser/config"
+
 # qutebrowser quickmarks
-# TODO: Do not rely on flatpak
-# TODO: Without flatpak: lncfge :c qutebrowser/quickmarks
-# TODO: Fix this link: lncfge :f ".var/app/org.qutebrowser.qutebrowser/config/qutebrowser/quickmarks"
+lncfge :c qutebrowser/quickmarks
 
 # ranger
 lncfge :c ranger

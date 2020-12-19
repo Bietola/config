@@ -21,7 +21,23 @@ let custom-ver-pkgs = {
       ref = "refs/heads/nixpkgs-unstable";                     
       rev = "2c162d49cd5b979eb66ff1653aecaeaa01690fcc";
     }) {}; in pkgsSnapshot.haskellPackages.haskell-language-server;
-  # hls = pkgs.haskellPackages.haskell-language-server;
+
+
+  # Qutebrowser (current version does not work for some reason...)
+  qutebrowser = let pkgsSnapshot = import (builtins.fetchGit {
+      name = "custom-qutebrowser-version";
+      url = "https://github.com/nixos/nixpkgs-channels/";
+      ref = "refs/heads/nixpkgs-unstable";                     
+      rev = "c83e13315caadef275a5d074243c67503c558b3b";
+    }) {}; in pkgsSnapshot.qutebrowser;
+
+  # openjdk8 for minecraft
+  openjdk = let pkgsSnapshot = import (builtins.fetchGit {
+      name = "old-openjdk8";
+      url = "https://github.com/nixos/nixpkgs-channels/";
+      ref = "refs/heads/nixpkgs-unstable";                     
+      rev = "2c162d49cd5b979eb66ff1653aecaeaa01690fcc";
+    }) {}; in pkgsSnapshot.openjdk;
 };
 
 in
@@ -54,16 +70,18 @@ in
     dmenu
     xclip
     zip
+    unzip
     scrot
     xorg.xev
     acpi
+    sxhkd
 
     # Terminal
     alacritty
 
     # Browsers
     firefox
-    # TODO: fix broken package: qutebrowser
+    # TODO: wait until nixpkgs: qutebrowser
     transmission-gtk
 
     # Media
@@ -104,6 +122,7 @@ in
   # Packages with custom version (See start of file)
   (with custom-ver-pkgs; [
     hls
+    qutebrowser
   ]);
 
   ############
@@ -129,20 +148,29 @@ in
   # Programs #
   ############
 
-  # Bash
+  # bash
   programs.bash = {
     enable = true;
 
-    shellAliases = {
+    shellAliases = 
+
+    # Helper functions to generate similar aliases
+    #
+    # TODO: make this work without nvim
+    let makeOpenAndSearchAlias = needle: foldlv:
+      "nvim -c '/\\<${needle}\\>' -c 'set foldlevel=${toString foldlv}' /etc/nixos/home/core.nix";
+
+    in {
       # Hacks
       sudo = "sudo ";
 
       # Automated way to edit automated config
-      edit-config-sys = "sudo $EDITOR /etc/nixos/configuration.nix";
-      edit-config-home = "sudo $EDITOR /etc/nixos/home/core.nix";
-      edit-config-todo = "sudo $EDITOR /etc/nixos/todo.md";
-      # TODO: make this work without nvim
-      edit-pkgs-home = "sudo nvim -c '/\\<home\\.packages\\>' /etc/nixos/home/core.nix";
+      edit-sys-config = "$EDITOR /etc/nixos/configuration.nix";
+      edit-home-config = "$EDITOR /etc/nixos/home/core.nix";
+      edit-home-dots = "$EDITOR /etc/nixos/home/dotfiles";
+      edit-sys-todo = "$EDITOR /etc/nixos/todo.md";
+      edit-home-pkgs = makeOpenAndSearchAlias "home.packages" 2;
+      edit-home-aliases = makeOpenAndSearchAlias "shellAliases" 3;
 
       # Better defaults
       ls = "ls --color=auto";
@@ -174,16 +202,16 @@ in
     '';
   };
 
-  # Alacritty
+  # alacritty
   programs.alacritty = {
     enable = true;
 
     settings = {
-      font.size = 11;
+      font.size = 9;
     };
   };
 
-  # Git
+  # git
   programs.git = {
     enable = true;
 
@@ -201,6 +229,7 @@ in
       sc = "stash clear";
       su = "stash --include-untracked";
       p = "push";
+      shit = "reflog";
     };
 
     extraConfig = {
@@ -214,7 +243,7 @@ in
     };
   };
 
-  # Vim
+  # vim
   programs.neovim = {
     enable = true;
     vimAlias = true;
@@ -264,7 +293,7 @@ in
     extraConfig = builtins.readFile ./dotfiles/nvim/init.vim;
   };
 
-  # XMonad
+  # xmonad
   xsession.windowManager.xmonad = {
     enable = true;
 
@@ -276,6 +305,13 @@ in
     ];
 
     config = ./dotfiles/xmonad/xmonad.hs;
+  };
+
+  # sxhkd
+  services.sxhkd = {
+    enable = true;
+
+    extraConfig = builtins.readFile ./dotfiles/sxhkd/sxhkdrc;
   };
 
   # Qutebrowser

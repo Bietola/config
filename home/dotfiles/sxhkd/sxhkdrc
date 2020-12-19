@@ -1,0 +1,119 @@
+######################
+# Quickly open files #
+######################
+
+# TODO: Fix systemctl and use it instead of calling sxhkd directly
+~super + x
+    ~/bin/spawn-term nvim ~/.config/sxhkd/sxhkdrc ;\
+    pkill sxhkd ;\
+    sxhkd &\
+    notify-send "sxhkd restarted"
+
+~super + o
+    emacs ~/sync/org/1.todo.org
+
+###########################
+# Quickly launch programs #
+###########################
+
+~super + n
+    nautilus ~
+
+~super + e
+    emacs
+
+~super + b
+    qutebrowser
+
+~super + f
+    firefox
+
+~super + r
+    "$TERMINAL" -e ranger
+
+##################
+# Power commands #
+##################
+
+alt + shift + s
+    shutdown now
+
+alt + shift + r
+    reboot
+
+#######################
+# Brightness controls #
+#######################
+
+~super + ctrl + m
+    set-brightness 100
+
+~super + ctrl + plus
+    set-brightness +10
+
+~super + ctrl + minus
+    set-brightness -10
+
+###################
+# Volume controls #
+###################
+
+~super + plus
+    amixer -c 0 sset Master 5%+ ;\
+    notify-send -t 1000 "volume: $(~/bin/show-vol 0 Master)"
+
+~super + minus
+    amixer -c 0 sset Master 5%- ;\
+    notify-send -t 1000 "volume: $(~/bin/show-vol 0 Master)"
+
+~super + m
+    ~/bin/toggle-sound-mute
+
+~super + s
+    notify-send "$(~/bin/toggle-sound-source | tail -n1)"
+
+~super + u
+    ~/bin/unmute-all  ;\
+    notify-send "unmuting all devices"
+
+
+#################################
+# Things for live screencapture #
+#################################
+
+# TODO: Try to make this the same binding that is used for recording and see what happens
+~super + ctrl + i
+    auto-timestamps -i
+
+~super + ctrl + u
+    auto-timestamps new
+
+~super + ctrl + n
+    auto-timestamps new $(~/bin/spawn-terminal-prompt "Name upcoming chapter: ")
+
+~super + ctrl + r
+    LAST_TIMESTAMP=$(auto-timestamps get-current duration) ;\
+    NAME=editor-prompt "Name chapter created $LAST_TIMESTAMP ago: " ;\
+    auto-timestamps set-current name "$NAME"
+
+###############
+# Credentials #
+###############
+
+~super + shift + p
+    ~/bin/pmenu
+
+########################
+# Reserved for testing #
+########################
+
+~super + shift + t
+    notify-send "Hello there"
+
+#############
+# Temporary #
+#############
+
+~super + shift + d
+    ~/bin/dati ;\
+    notify-send "Data saved"
