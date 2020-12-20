@@ -1,0 +1,14 @@
+#/bin/sh
+
+HOME_CONF_DIR=/etc/nixos/home
+HOME_BIN_DIR=$HOME_CONF_DIR/bin
+
+sudo chown root:users "$HOME_CONF_DIR"
+sudo chmod -R ug=rwx "$HOME_CONF_DIR"
+
+# Find all files (which should not have x permissions)
+find "$HOME_CONF_DIR" -type f |\
+    # Exclude bin dir (x is ok inside of bin dir...)
+    grep -v "^$HOME_BIN_DIR" |\
+    # Remove x permissions
+    xargs -L1 sudo chmod ug=rw
