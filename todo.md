@@ -6,6 +6,10 @@
 
 ## Other things
 
+- Set up pass
+- "Fix" hie.yaml inside utils/bin/hs
+- Finish writing edit-home-prog
+- Finish writing ttimer
 - Learn about systemd services for setting up sxhkd
 - Write brightness changing script
 - Setup /sd

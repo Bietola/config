@@ -28,4 +28,6 @@
         '';
       in "${pkgs.xorg.xmodmap}/bin/xmodmap ${myCustomLayout}";
   };
+
+  terminal.font.size = 9;
 }

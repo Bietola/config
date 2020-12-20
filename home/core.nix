@@ -168,7 +168,6 @@ in
       edit-config-dir = "$EDITOR /etc/nixos";
       edit-sys-config = "$EDITOR /etc/nixos/configuration.nix";
       edit-home-config = "$EDITOR /etc/nixos/home/core.nix";
-      edit-home-config = "$EDITOR /etc/nixos/home/${machine}/default.nix";
       edit-home-dots = "$EDITOR /etc/nixos/home/dotfiles";
       edit-sys-todo = "$EDITOR /etc/nixos/todo.md";
       edit-home-pkgs = makeOpenAndSearchAlias "home.packages" 2;
@@ -209,7 +208,8 @@ in
     enable = true;
 
     settings = {
-      font.size = machineConf.terminal.font.size;
+      # TODO: font.size = machineConf.terminal.font.size;
+      font.size = 12;
     };
   };
 
@@ -273,6 +273,9 @@ in
 
       # Snippets
       ultisnips
+
+      # Hypertext
+      vim-orgmode
 
       # Programming
       vim-slime

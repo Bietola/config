@@ -115,3 +115,4 @@ pretty-code https://hastebin.com/niwatipexa.properties
 nixpkgs-rep https://github.com/NixOS/nixpkgs
 nix-docs-builtins https://nixos.org/manual/nix/unstable/expressions/builtins.html
 youtube https://www.youtube.com/
+vim-ultisnips-docs http://vimcasts.org/episodes/meet-ultisnips/
