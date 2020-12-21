@@ -5,4 +5,6 @@
  --package turtle
 -}
 
-main = 
+import Turtle
+
+main = aowicn awoin

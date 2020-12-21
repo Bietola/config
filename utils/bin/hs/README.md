@@ -1,4 +1,4 @@
-WARNING: Process below still needs to be tested with the new directory-per-script paradigm.
+WARNING: The method described below is outdate... just use `./mkscript SCRIPT_FOLDER_NAME`.
 
 To add a new script:
 

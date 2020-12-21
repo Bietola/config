@@ -1,0 +1,6 @@
+# What is below used to work, but doesn't anymore...
+# Here is the relevant issue: https://github.com/mpickering/hie-bios/issues/217
+
+cradle:
+    stack:
+        component: "ttimer.hs"
