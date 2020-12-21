@@ -91,7 +91,7 @@ poli-sw2-progetto-maldini-paone https://github.com/pm390/MaldiniPaone
 sw2-progetto-maldini-montesi https://github.com/pm390/MaldiniMontesi/
 sw2-project-rep https://github.com/pm390/MaldiniMontesi/
 cat-cafe https://golem.ph.utexas.edu/category/
-nix-pkg-search https://search.nixos.org/packages?channel=20.09&from=0&size=30&sort=relevance&query=boxes
+nix-pkg-search https://search.nixos.org/packages?channel=unstable&from=0&size=30&sort=relevance&query=boxes
 home-manager-rep https://github.com/nix-community/home-manager
 home-manager-rep-git https://github.com/nix-community/home-manager/blob/44f9d68d8c21aecda1cde153b72af5e99d367afe/modules/programs/git.nix
 home-manager-rep-bash https://github.com/nix-community/home-manager/blob/8537920706fafab12a2c2a138dfb6f5c35a6b240/modules/programs/bash.nix

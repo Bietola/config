@@ -75,6 +75,7 @@ in
     xorg.xev
     acpi
     sxhkd
+    gnupg
 
     # Terminal
     alacritty
@@ -88,6 +89,7 @@ in
     mplayer
     ranger
     vlc
+    ffmpeg
 
     # Looks
     redshift
@@ -165,7 +167,7 @@ in
       sudo = "sudo ";
 
       # Automated way to edit automated config
-      edit-config-dir = "$EDITOR /etc/nixos";
+      edit-config-dir = "cd /etc/nixos";
       edit-sys-config = "$EDITOR /etc/nixos/configuration.nix";
       edit-home-config = "$EDITOR /etc/nixos/home/core.nix";
       edit-home-dots = "$EDITOR /etc/nixos/home/dotfiles";
@@ -243,6 +245,11 @@ in
       diff.submodule = "log";
       status.submodulesummary = 1;
     };
+  };
+
+  # pass
+  programs.password-store = {
+    enable = true;
   };
 
   # vim

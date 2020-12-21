@@ -3,7 +3,7 @@
 HOME_CONF_DIR=/etc/nixos/home
 HOME_BIN_DIR=$HOME_CONF_DIR/bin
 
-sudo chown root:users "$HOME_CONF_DIR"
+sudo chown -R root:users "$HOME_CONF_DIR"
 sudo chmod -R ug=rwx "$HOME_CONF_DIR"
 
 # Find all files (which should not have x permissions)

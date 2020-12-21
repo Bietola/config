@@ -18,3 +18,5 @@
 - Make PR for adding quickmarks file to qutebrowser config
 - Find out why xsession in home-manager dactivates caps lock remapping in configuration.nix
 - git alias: start-ignoring
+- automante pass setup
+    for now: read relevant section in 1.todo.org
