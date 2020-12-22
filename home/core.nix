@@ -134,7 +134,7 @@ in
   # Xsession/Xprofile
   xsession = {
     # TODO: Fix this overriding custom keyboard layout in nixos config
-    enable = false;
+      enable = false;
 
     # Things that would go into ´~/.xprofile´
     initExtra = ''
@@ -143,6 +143,9 @@ in
 
       # Nature is relaxing
       feh --bg-scale ~/img/wp/forest.jpg
+
+      # TODO: HACK: sxhkd needs to be restarted for some reason
+      pkill sxhkd; sxhkd &
     '';
   };
 
@@ -169,7 +172,7 @@ in
       # Automated way to edit automated config
       edit-config-dir = "cd /etc/nixos";
       edit-sys-config = "$EDITOR /etc/nixos/configuration.nix";
-      edit-home-config = "$EDITOR /etc/nixos/home/core.nix";
+      edit-home-core = "$EDITOR /etc/nixos/home/core.nix";
       edit-home-dots = "$EDITOR /etc/nixos/home/dotfiles";
       edit-sys-todo = "$EDITOR /etc/nixos/todo.md";
       edit-home-pkgs = makeOpenAndSearchAlias "home.packages" 2;

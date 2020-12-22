@@ -1,14 +1,26 @@
 #/bin/sh
 
-HOME_CONF_DIR=/etc/nixos/home
-HOME_BIN_DIR=$HOME_CONF_DIR/bin
+FOLDERS_THAT_CAN_BE_ACCESSED_BY_USERS=$(
+    echo /etc/nixos/home         # All home configuration
+    echo /etc/nixos/utils/bin    # Scripts useful to users
+)
 
-sudo chown -R root:users "$HOME_CONF_DIR"
-sudo chmod -R ug=rwx "$HOME_CONF_DIR"
+FOLDERS_WITH_EXECUTABLE_FILES=$(
+    echo /etc/nixos/home/bin     # Util scripts for configuring home
+    echo /etc/nixos/utils/bin    # See above
+)
 
-# Find all files (which should not have x permissions)
-find "$HOME_CONF_DIR" -type f |\
-    # Exclude bin dir (x is ok inside of bin dir...)
-    grep -v "^$HOME_BIN_DIR" |\
-    # Remove x permissions
-    xargs -L1 sudo chmod ug=rw
+# # Set group ownership to `users` group
+# echo $FOLDERS_THAT_CAN_BE_ACCESSED_BY_USERS |\
+#     xargs -L1 sudo chown -R root:users 
+
+# All folders get `rwx` as they need to also be executable for some reason
+echo $FOLDERS_THAT_CAN_BE_ACCESSED_BY_USERS |\
+    xargs -I % -L1 find % -type d -exec sudo echo {} \;
+    # find xxx -type d -exec sudo chmod ug=rwx {} \;
+
+# # Files get `rw` as not all files need to be executable...
+# find "$FOLDERS_THAT_CAN_BE_ACCESSED_BY_USERS" -type f -exec sudo chmod ug=rw {} \;
+
+# # ...Except for the ones that do
+# find "$FOLDERS_WITH_EXECUTABLE_FILES" -type f -exec sudo chmod ug=rwx {} \;
