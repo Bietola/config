@@ -8,12 +8,20 @@
 
 ### Prepare for 1h/day AOC
 
-- Manually fix privileges so tath git can be used and everything isn't shit...
+- Ready sync folder for poli/cat work
+- Try and see if permission break if config is recloned
+- If they break:
+    - Use `mkscript` to refactor `bin/set-home-privileges` to Haskell
+    - Fix permissions once and for all (again)
 - Add xmonad-like window switching to vim + tab for coc completion
-- Use `mkscript` to refactor `bin/set-home-privileges` to Haskell
-- Fix permissions once and for all (again)
 - Make `mkscript` more accessible (and think about accessibility of scripts more in general)
+- Setup freaking manual backup (try on sd first)
+- If sd fails:
+    - Set up on hard disk
 - Finish writing ttimer in hs
+- Setup freaking daily backup (try on sd first)
+- If sd fails:
+    - Set up on hard disk
 
 ### Things to do in better times
 

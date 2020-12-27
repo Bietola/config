@@ -77,6 +77,11 @@ in
     sxhkd
     gnupg
 
+    # Advanced Utils
+    meld
+    virtualbox # TODO: Consider if removing for virt-manager
+    virt-manager
+
     # Terminal
     alacritty
 
@@ -90,6 +95,7 @@ in
     ranger
     vlc
     ffmpeg
+    zathura
 
     # Looks
     redshift

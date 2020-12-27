@@ -11,8 +11,6 @@ script-manager https://github.com/pier-cli/pier
 github-reps https://github.com/Bietola?tab=repositories
 ripgrep-cs https://www.philipdaniels.com/blog/2019/ripgrep-cheatsheet/
 gmail https://mail.google.com/mail/u/0/#inbox
-pirate-ita https://il-corsaro-nero-it.it/
-pirate-ita-3 https://il-corsaro-nero-ita.it/index.php?do=search&subaction=search
 pirate-ita-2 https://ilcorsaronero-italiano.it/
 pirate-ita-4 https://www.arciesperanto.it/index.php?do=search&subaction=search
 crates https://crates.io/
@@ -116,3 +114,4 @@ nixpkgs-rep https://github.com/NixOS/nixpkgs
 nix-docs-builtins https://nixos.org/manual/nix/unstable/expressions/builtins.html
 youtube https://www.youtube.com/
 vim-ultisnips-docs http://vimcasts.org/episodes/meet-ultisnips/
+armatura-cs https://it.wikipedia.org/wiki/Armatura_(musica)

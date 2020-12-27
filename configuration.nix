@@ -100,7 +100,7 @@ in
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.dincio = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "docker" ];
+    extraGroups = [ "wheel" "docker" "libvirtd" ];
   };
 
   # List packages installed in system profile. To search, run:
@@ -115,6 +115,14 @@ in
 
   # Enable docker
   virtualisation.docker.enable = true;
+
+  # Enable virtualbox
+  virtualisation.virtualbox.host.enable = true;
+  users.extraGroups.vboxusers.members = [ "root" "dincio" ];
+
+  # Enable virt-manager
+  virtualisation.libvirtd.enable = true;
+  programs.dconf.enable = true;
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
