@@ -53,6 +53,7 @@
   extraPackages = pkgs: with pkgs; [
     # Needed for making sound work.
     # Archwiki link: https://wiki.archlinux.org/index.php/HP_Spectre_x360_-_13-ap0xxxx#Audio.
-    sof-firmware
+    # TODO: Find out why this doesn't work
+    # sof-firmware
   ];
 }

@@ -12,19 +12,21 @@
 
 ### Prepare for AOC
 
+#### Setup backup
+- Try to upload dummy file to onedrive w/ rclone
+- Try local manual backup w/ restic
+- Try onedrive manual backup w/ restic
+- Automate restic onedrive backup
+
+#### Others
+
+- Finish writing ttimer in hs
 - Try and see if permission break if config is recloned
 - If they break:
     - Use `mkscript` to refactor `bin/set-home-privileges` to Haskell
     - Fix permissions once and for all (again)
 - Add xmonad-like window switching to vim + tab for coc completion
 - Make `mkscript` more accessible (and think about accessibility of scripts more in general)
-- Setup freaking manual backup (try on sd first)
-- If sd fails:
-    - Set up on hard disk
-- Finish writing ttimer in hs
-- Setup freaking daily backup (try on sd first)
-- If sd fails:
-    - Set up on hard disk
 
 ### Things to do in better times
 

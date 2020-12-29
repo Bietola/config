@@ -275,3 +275,6 @@ lncfge :h ".stack/config.yaml"
 # vim plugin configs
 lncfge :c nvim/coc-settings.json
 lncfge :c nvim/UltiSnips
+
+# rclone
+lncfge :c rclone

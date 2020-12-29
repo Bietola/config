@@ -78,6 +78,9 @@ in
     gnupg
 
     # Advanced Utils
+    git-crypt
+    rclone
+    restic
     meld
     virtualbox # TODO: Consider if removing for virt-manager
     virt-manager
@@ -179,7 +182,7 @@ in
       edit-config-dir = "cd /etc/nixos";
       edit-sys-config = "$EDITOR /etc/nixos/configuration.nix";
       edit-home-core = "$EDITOR /etc/nixos/home/core.nix";
-      edit-home-dots = "$EDITOR /etc/nixos/home/dotfiles";
+      edit-dots = "cd /etc/nixos/home/dotfiles";
       edit-sys-todo = "$EDITOR /etc/nixos/todo.md";
       edit-home-pkgs = makeOpenAndSearchAlias "home.packages" 2;
       ehp = "edit-home-pkgs";

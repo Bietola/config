@@ -1,8 +1,8 @@
 #!/bin/sh
 
-USAGE="Usage: set-canonic-permissions USER GROUP FOLDER"
+USAGE="Usage: set-canonic-permissions USER GROUP FOLDER [EXECUTABLE_FILES/FOLDERS_WITH_EXECUTABLES...]"
 
-if [[ "$#" -ne 3 ]]; then
+if [[ "$#" -lt 3 ]]; then
     echo "$USAGE"
     exit 1
 fi
@@ -10,9 +10,17 @@ fi
 USER="$1"
 GROUP="$2"
 FOLDER="$3"
+# All agruments from the forth onwards are folders with executable files
+FOLDERS_WITH_EXECUTABLES=$(echo "$@" | cut -d' ' -f4-)
 
 chown -R "$USER:$GROUP" "$FOLDER"
 chmod -R ug=rwx "$FOLDER"
 chmod -R o= "$FOLDER"
 
 find "$FOLDER" -type f -exec chmod ug=rw {} \;
+
+# Make everything inside executable folders executable
+# NB. single files can also be specified
+for folder_w_exe in "$FOLDERS_WITH_EXECUTABLES"; do
+    find "$FOLDER" -name "$folder_w_exe" -exec chmod -R ug=rwx {} \;
+done
