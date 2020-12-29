@@ -102,7 +102,7 @@ in
     feh
 
     # System management
-    # syncthing # TODO: Set this up properly...
+    syncthing
     pass
 
     # Programming utils
@@ -182,6 +182,7 @@ in
       edit-home-dots = "$EDITOR /etc/nixos/home/dotfiles";
       edit-sys-todo = "$EDITOR /etc/nixos/todo.md";
       edit-home-pkgs = makeOpenAndSearchAlias "home.packages" 2;
+      ehp = "edit-home-pkgs";
       edit-home-aliases = makeOpenAndSearchAlias "shellAliases" 3;
 
       # Better defaults
@@ -333,6 +334,11 @@ in
     enable = true;
 
     extraConfig = builtins.readFile ./dotfiles/sxhkd/sxhkdrc;
+  };
+
+  # syncthing
+  services.syncthing = {
+    enable = true;
   };
 
   # Qutebrowser

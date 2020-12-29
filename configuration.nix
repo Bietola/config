@@ -31,6 +31,9 @@ in
       (import "${home-manager}/nixos")
     ];
 
+  # Used for virtualbox extension packs
+  nixpkgs.config.allowUnfree = true;
+
   # Home manager configuration
   # TODO handle differences with function
   home-manager.users = {
@@ -118,11 +121,8 @@ in
 
   # Enable virtualbox
   virtualisation.virtualbox.host.enable = true;
+  virtualisation.virtualbox.host.enableExtensionPack = true;
   users.extraGroups.vboxusers.members = [ "root" "dincio" ];
-
-  # Enable virt-manager
-  virtualisation.libvirtd.enable = true;
-  programs.dconf.enable = true;
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.

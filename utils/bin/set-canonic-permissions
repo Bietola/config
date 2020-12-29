@@ -4,14 +4,15 @@ USAGE="Usage: set-canonic-permissions USER GROUP FOLDER"
 
 if [[ "$#" -ne 3 ]]; then
     echo "$USAGE"
+    exit 1
 fi
 
 USER="$1"
 GROUP="$2"
 FOLDER="$3"
 
-chown -R        "$USER:$GROUP" "$FOLDER"
-chmod -R ug=rwx "$USER:$GROUP" "$FOLDER"
-chmod -R o=     "$USER:$GROUP" "$FOLDER"
+chown -R "$USER:$GROUP" "$FOLDER"
+chmod -R ug=rwx "$FOLDER"
+chmod -R o= "$FOLDER"
 
 find "$FOLDER" -type f -exec chmod ug=rw {} \;

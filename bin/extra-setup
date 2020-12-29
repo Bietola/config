@@ -197,6 +197,7 @@ function lncfge() {
 # lncfge -h :e wpa_supplicant
 
 # blacklisted modules
+# TODO: Add this when Haskell implementation is over
 # NB. this is for making sound work, for **linux-sof** modules to make the mic work, older sound modules
 #     need to be blacklisted.
 # lncfge -h :e modprobe.d
