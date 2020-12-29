@@ -24,6 +24,8 @@ in
       
       # Machine-specific configuration
       machineConf.bootLoader
+      # TODO: Find why this doesn't work (see todo.md)
+      # TODO: machineConf.makeSoundWork
       machineConf.keyboard
       machineConf.networking
 
@@ -109,8 +111,10 @@ in
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    # Everything is managed by home-manager!
-  ];
+    # NB. Most packages are managed by home-manager
+  ] ++
+  # Packages needed for the machine
+  machineConf.extraPackages pkgs;
 
   # Kill Luke Smith
   # NOTE: Actually not needed anymore

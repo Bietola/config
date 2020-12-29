@@ -8,10 +8,6 @@
 
 - qutebrowser
  
-## IMPORTANT WARNINGS
-
-- Eseential changes made to `/etc/modprobe.d` (https://wiki.archlinux.org/index.php/HP_Spectre_x360_-_13-ap0xxxx#Audio) are not reflected anywhere in `c:`... see the todos to remedy this.
-
 ## Other things
 
 ### Prepare for AOC
@@ -35,9 +31,7 @@
 - Rewrite `c:/extra-setup` in Haskell
     - Add hardlink and backup functionality
         - Test them
-        - Use them to make `lncfg -h /etc/modprobe.d` entry work
-- Ask if there is a way of reflecting changes done to `/etc/modprobe.d` somewhere in `c:`
-    - NB. Also remember to remove the hardlink conf from `c:/bin/extra-setup`
+- Ask on forums why `richard:makeSoundWork` doesn't work
 - Finish writing edit-home-prog
 - Learn about systemd services for setting up sxhkd
 - Write brightness changing script

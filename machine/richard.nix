@@ -6,6 +6,15 @@
     # TODO: enable os-prober
   };
 
+  makeSoundWork = { ... }: {
+    # Needed to make sound work properly, as specified here:
+    # https://wiki.archlinux.org/index.php/HP_Spectre_x360_-_13-ap0xxxx#Audio
+    boot.extraModprobeConfig = ''
+      blacklist snd_hda_intel
+      blacklist snd_soc_skl
+    '';
+  };
+
   keyboard = { lib, pkgs, ... }: {
     # Configure keymap in X11
     services.xserver.layout = "it";
@@ -40,4 +49,10 @@
   };
 
   terminal.font.size = 12;
+
+  extraPackages = pkgs: with pkgs; [
+    # Needed for making sound work.
+    # Archwiki link: https://wiki.archlinux.org/index.php/HP_Spectre_x360_-_13-ap0xxxx#Audio.
+    sof-firmware
+  ];
 }
