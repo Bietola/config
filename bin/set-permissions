@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# Home directory can be edited by users group members
+/etc/nixos/utils/bin/set-canonic-permissions root users \
+    /etc/nixos/home \
+    bin # Folders with executables
+
+# Todo file is editable by users
+/etc/nixos/utils/bin/set-canonic-permissions root users \
+    /etc/nixos/todo.md

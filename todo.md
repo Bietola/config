@@ -30,9 +30,10 @@
 
 ### Things to do in better times
 
-- Rewrite `c:/extra-setup` in Haskell
+- Rewrite `c:/bin/extra-setup` in Haskell
     - Add hardlink and backup functionality
         - Test them
+- Write central `c:/bin/setup.hs` which does **all the setup**. Also document eventual manual setup instructions (such as importing gpg keys).
 - Ask on forums why `richard:makeSoundWork` doesn't work
 - Finish writing edit-home-prog
 - Learn about systemd services for setting up sxhkd
