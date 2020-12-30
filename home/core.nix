@@ -1,4 +1,6 @@
-{ pkgs, username, homeDirectory }:
+{ lib, pkgs, config, username, homeDirectory, ... }:
+
+with lib;
 
 ############################
 # Custom package snapshots #
@@ -44,6 +46,9 @@ in
 
 # Start of config set
 {
+  # Imports
+  imports = [ ./hamachi-minecraft-server.nix ];
+
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
 
@@ -125,8 +130,8 @@ in
     xorg.xmodmap
 
     # Games
-    # TODO minecraft-server
-    # TODO logmein-hamachi
+    minecraft-server
+    logmein-hamachi
 
     # Poli
     alloy5
