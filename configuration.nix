@@ -85,9 +85,6 @@ in
   # Enable CUPS to print documents
   # services.printing.enable = true;
 
-  # Enable gpg service for generating gpg keys
-  programs.gnupg.agent.enable = true;
-
   # For easy bluetooth with blueman-applet and blueman-manager
   # TODO: Remove if bluetoothctl works: services.blueman.enable = true;
 

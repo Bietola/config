@@ -76,6 +76,7 @@ in
     acpi
     sxhkd
     gnupg
+    pinentry-gnome
 
     # Advanced Utils
     git-crypt
@@ -253,6 +254,7 @@ in
       b = "branch";
       sc = "stash clear";
       su = "stash --include-untracked";
+      sp = "stash pop";
       p = "push";
       shit = "reflog";
       r2 = "rebase --interactive HEAD~2";
@@ -341,6 +343,11 @@ in
     ];
 
     config = ./dotfiles/xmonad/xmonad.hs;
+  };
+
+  # gpg
+  services.gpg-agent = {
+    enable = true;
   };
 
   # sxhkd

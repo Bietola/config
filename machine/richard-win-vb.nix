@@ -45,4 +45,8 @@
 
 
   terminal.font.size = 9;
+
+  extraPackages = pkgs: with pkgs; [
+    # Nothing for now
+  ];
 }
