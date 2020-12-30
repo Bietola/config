@@ -16,7 +16,7 @@
 - Try to upload dummy file to onedrive w/ rclone
 - Try local manual backup w/ restic
 - Try onedrive manual backup w/ restic
-- Automate restic onedrive backup
+- Write simple scripts to backup with a single command on both richard and richard-win-vb, these will serve as temprorary until a proper systemd service is written.
 
 #### Others
 
@@ -34,6 +34,8 @@
     - Add hardlink and backup functionality
         - Test them
 - Write central `c:/bin/setup.hs` which does **all the setup**. Also document eventual manual setup instructions (such as importing gpg keys).
+- Turn `c:/bin/richard-do-bu` and `c:/bin/richard-win-vb-do-bu` into a proper systemd service
+    - First read this: https://nixos.wiki/wiki/Module
 - Ask on forums why `richard:makeSoundWork` doesn't work
 - Finish writing edit-home-prog
 - Learn about systemd services for setting up sxhkd
@@ -46,4 +48,3 @@
 - Find out why xsession in home-manager dactivates caps lock remapping in configuration.nix
 - git alias: start-ignoring
 - Fix sxhkd (for now use pkill when is doesn't work properly)
-
