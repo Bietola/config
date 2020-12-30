@@ -185,8 +185,16 @@ in
       edit-dots = "cd /etc/nixos/home/dotfiles";
       edit-sys-todo = "$EDITOR /etc/nixos/todo.md";
       edit-home-pkgs = makeOpenAndSearchAlias "home.packages" 2;
-      ehp = "edit-home-pkgs";
       edit-home-aliases = makeOpenAndSearchAlias "shellAliases" 3;
+
+      # Program-specific configuation editing
+      edit-git-aliases = makeOpenAndSearchAlias "programs.git" 2;
+
+      # Even faster ways to edit configuration
+      eh = "edit-home-core";
+      ehp = "edit-home-pkgs";
+      eha = "edit-home-aliases";
+      ega = "edit-git-aliases";
 
       # Better defaults
       ls = "ls --color=auto";
@@ -247,6 +255,9 @@ in
       su = "stash --include-untracked";
       p = "push";
       shit = "reflog";
+      r2 = "rebase --interactive HEAD~2";
+      r3 = "rebase --interactive HEAD~3";
+      r4 = "rebase --interactive HEAD~4";
     };
 
     extraConfig = {
