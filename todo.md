@@ -48,3 +48,5 @@
 - Find out why xsession in home-manager dactivates caps lock remapping in configuration.nix
 - git alias: start-ignoring
 - Fix sxhkd (for now use pkill when is doesn't work properly)
+- Make customized dmenu script to launch applications
+    - Include aliases
