@@ -1,0 +1,9 @@
+#!/bin/sh
+
+insult() {
+    echo "Who put you on the planet? HughUhgughu!"
+}
+
+[[ "$@" == "You dance bad" ]] && insult
+[[ "$@" == "Your dance big cringe m8" ]] && insult
+[[ "$@" == "You're telling me you're not dancing for the queen...\nThat's a big cringe ain't it bruh..." ]] && insult

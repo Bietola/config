@@ -84,6 +84,7 @@ in
     rclone
     restic
     meld
+    briss
     virtualbox # TODO: Consider if removing for virt-manager
     virt-manager
 
@@ -211,7 +212,7 @@ in
       show-ip4 = "wget http://checkip.dyndns.org/ -O - -o /dev/null | cut -d: -f 2 | cut -d\< -f 1";
 
       # Quick access to files
-      real="zathura ~/books/music/the-real-book.pdf";
+      real="zathura ~/books/music/the-real-book.pdf & disown; exit";
     };
 
     bashrcExtra = ''

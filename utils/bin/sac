@@ -1,0 +1,13 @@
+#!/bin/sh
+
+function usage() {
+    echo "Usage: sac BASH_COMMANDS"
+    exit 1
+}
+
+if [[ "$#" -ne 0 ]]; then
+    eval "$@" & disown; exit
+fi
+
+sleep 1
+kill -9 $PPPID

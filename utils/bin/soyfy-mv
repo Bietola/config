@@ -1,0 +1,8 @@
+#!/bin/sh
+
+usage() {
+    echo "Usage: soyfy-mv PATH_TO_SOIFY"
+    exit 1
+}
+
+mv "$@" "$(~/bin/soyfy $@)"
