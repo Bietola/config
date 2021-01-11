@@ -20,6 +20,8 @@
 
 #### Others
 
+- Add named tags to xmobar
+- Make xmobar prettier
 - Fix nixos partition, separate home folder into separate partition, make richard-win-vb access home partition with VirtualBox magic
 - Finish writing ttimer in hs
 - Try and see if permission break if config is recloned

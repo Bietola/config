@@ -122,8 +122,9 @@ in
     stack
     nodejs # mainly for coc vim plugin
 
-    # Xorg configuration
+    # Desktop
     xorg.xmodmap
+    xmobar
 
     # Games
     # TODO minecraft-server
@@ -259,6 +260,7 @@ in
       su = "stash --include-untracked";
       sp = "stash pop";
       p = "push";
+      pf = "push --force-with-lease";
       shit = "reflog";
       r2 = "rebase --interactive HEAD~2";
       r3 = "rebase --interactive HEAD~3";
