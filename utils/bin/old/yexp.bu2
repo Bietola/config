@@ -13,30 +13,12 @@ env = {}
 cached_exps = {}
 lines = []
 
-#######################
-# Precompiles regexes #
-#######################
-
-# Warning: First capture group of these must be the indent
-keyval_pair_re = re.compile('^(\s*)(.*)\s*:(.*>)?\s*(.*)$')
-eval_pair_re = re.compile('^(\s*)(.*)\s*:(.)>\s*(.*)$')
-
-new_subscope_re = re.compile('^\s*(.*):\s*$')
-whitespace_re = re.compile('^\s*$')
-list_ele_re = re.compile('^\s*-.*$')
-
 ####################
 # Helper functions #
 ####################
 
 def eprint(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
-
-def add_scope(scope, s):
-    if len(scope) > 0:
-        return '.'.join(scope) + '.' + s
-
-    return s
 
 def dict_add_dotted_str(d, s, val, err_on_present = False):
     splt_s = s.split('.', 1)
@@ -63,24 +45,23 @@ def dict_get_w_dotted_key(d, s):
     else:
         return dict_get_w_dotted_key(d[topkey], rest)
 
-def do_eval_in_sub(scope, m):
+def do_eval_in_sub(m):
     indent = m.group(1)
     name = m.group(2)
     control_char = m.group(3)
     exp = m.group(4)
 
     str_key = indent + name
-    name = add_scope(scope, name)
 
     if control_char == "$":
-        dict_add_dotted_str(cached_exps, name, exp)
-        val = do_eval_interpolation(exp, scope)
+        cached_exps[name] = exp
+        val = do_eval_interpolation(exp)
         return str_key + ":#> " + str(val)
 
     elif control_char == "#" or control_char == "S" or control_char == "E":
-        if cached_exp := dict_get_w_dotted_key(cached_exps, name):
+        if cached_exp := cached_exps.get(name, None):
             if control_char == "#":
-                val = do_eval_interpolation(exp, scope)
+                val = do_eval_interpolation(exp)
             elif control_char == "S":
                 val = cached_exp
             elif control_char == "E":
@@ -102,61 +83,39 @@ def is_float(value):
   except:
     return False
 
-def do_eval_interpolation(interpolated_str, scope):
+def do_eval_interpolation(interpolated_str):
     return re.sub(
         r'\$\{(.*?)\}',
-        lambda m: str(do_eval_w_err(m.group(1), scope)),
+        lambda m: str(do_eval_w_err(m.group(1))),
         interpolated_str
     )
 
-def do_eval_w_err(exp, scope):
-    val = do_eval(exp, scope)
+def do_eval_w_err(exp):
+    val = do_eval(exp)
     if not val:
         return "Error: No expression cached for " + name
     else:
         return val
 
-def do_eval(exp, scope):
+def do_eval(exp):
     exp_w_subs = []
     for word in exp.split():
         if is_op(word) or is_float(word):
             exp_w_subs.append(word)
         else:
-            if word[0] == '.': word = add_scope(scope, word[1:])
             val = dict_get_w_dotted_key(env, word)
             if val == None:
                 return "Error: No variable named \"" + word + "\""
-            elif type(val) is dict:
+            if type(val) is dict:
                 return "Error: " + word + " is a dictionary"
             else:
                 while not is_float(val):
-                    val = str(do_eval(val, scope))
+                    val = str(do_eval(val))
                 exp_w_subs.append(val)
 
     # eprint(exp_w_subs)
 
     return eval(' '.join(exp_w_subs))
-
-INDENT_UNIT = 4
-def update_scope_and_then(scope, cur_scope_lv, passthrough_re):
-    if m := new_subscope_re.match(line):
-        scope.append(m.group(1))
-        cur_scope_lv += 1
-        return None
-
-    if m := passthrough_re.match(line):
-        ident_lv = m.group(1)
-
-        line_scope_lv = int(len(ident_lv) / INDENT_UNIT)
-        if line_scope_lv > cur_scope_lv:
-            pass
-        elif line_scope_lv < cur_scope_lv:
-            scope = scope[:line_scope_lv]
-        else:
-            pass
-        cur_scope_lv = line_scope_lv
-
-        return m
 
 ########
 # Main #
@@ -166,8 +125,14 @@ def update_scope_and_then(scope, cur_scope_lv, passthrough_re):
 lines = sys.stdin.read().split('\n')
 
 # First pass: get variables
+keyval_pair_re = re.compile('^(\s*)(.*)\s*:(.*>)?\s*(.*)$')
+new_subscope_re = re.compile('^\s*(.*):\s*$')
+whitespace_re = re.compile('^\s*$')
+list_ele_re = re.compile('^\s*-.*$')
 cur_scope_lv = 0
 scope = []
+IDENT_UNIT = 4
+def ident_err(linenum): return "Error: indentation off at line " + str(linenum)
 for [linenum, line] in enumerate(lines):
     if whitespace_re.match(line):
         continue
@@ -175,11 +140,28 @@ for [linenum, line] in enumerate(lines):
     if list_ele_re.match(line):
         continue
 
-    if m := update_scope_and_then(scope, cur_scope_lv, keyval_pair_re):
+    if m := new_subscope_re.match(line):
+        scope.append(m.group(1))
+        cur_scope_lv += 1
+        continue
+
+    if m := keyval_pair_re.match(line):
+        ident_lv = m.group(1)
         name = m.group(2)
         val = m.group(4)
 
-        dict_add_dotted_str(env, add_scope(scope, name), val, True)
+        line_scope_lv = int(len(ident_lv) / IDENT_UNIT)
+        if line_scope_lv > cur_scope_lv:
+            pass
+        elif line_scope_lv < cur_scope_lv:
+            scope = scope[:line_scope_lv]
+        else:
+            pass
+        cur_scope_lv = line_scope_lv
+
+        if cur_scope_lv > 0:
+            name = '.'.join(scope) + '.' + name
+        dict_add_dotted_str(env, name, val, True)
 
 eprint(env, end = '')
 
@@ -206,30 +188,14 @@ except:
     malformed_storage = True
     cached_exps = {}
 
-# for line in body:
-#     print(
-#         re.sub(
-#             r'^(\s*)(.*)\s*:(.)>\s*(.*)$',
-#             do_eval_in_sub,
-#             line
-#         )
-#     )
-
-scope = []
-cur_scope_lv = 0
 for line in body:
-    if whitespace_re.match(line):
-        print(line)
-        continue
-
-    if list_ele_re.match(line):
-        print(line)
-        continue
-
-    if m := update_scope_and_then(scope, cur_scope_lv, eval_pair_re):
-        print(do_eval_in_sub(scope, m))
-    else:
-        print(line)
+    print(
+        re.sub(
+            r'^(\s*)(.*)\s*:(.)>\s*(.*)$',
+            do_eval_in_sub,
+            line
+        )
+    )
 
 if malformed_storage:
     print()
