@@ -1,0 +1,147 @@
+#! /usr/bin/env nix-shell
+#! nix-shell -i python -p python39 python39Packages.pyyaml
+
+import re
+import sys
+import yaml
+
+###########
+# Globals #
+###########
+
+env = {}
+cached_exps = {}
+lines = []
+
+####################
+# Helper functions #
+####################
+
+def eprint(*args, **kwargs):
+    print(*args, file=sys.stderr, **kwargs)
+
+def do_eval_in_sub(m):
+    def do_eval_w_err(exp):
+        val = do_eval(exp)
+        if not val:
+            return "Error: No expression cached for " + name
+        else:
+            return val
+
+    indent = m.group(1)
+    name = m.group(2)
+    control_char = m.group(3)
+    exp = m.group(4)
+
+    str_key = indent + name
+
+    if control_char == "$":
+        cached_exps[name] = exp
+        val = do_eval_w_err(exp)
+        return str_key + ":#> " + str(val)
+
+    elif control_char == "#" or control_char == "S" or control_char == "E":
+        if cached_exp := cached_exps.get(name, None):
+            if control_char == "#":
+                val = do_eval_w_err(exp)
+            elif control_char == "S":
+                val = cached_exp
+            elif control_char == "E":
+                val = cached_exp
+                control_char = "$"
+
+            return str_key + ":" + control_char + "> " + str(val)
+
+    else:
+        return str_key + ":" + control_char + "> " + "Error: Unknown control character: " + control_char
+
+def is_op(s):
+    return (s == "+" or s == "-" or s == "/" or s == "*")
+
+def is_float(value):
+  try:
+    float(value)
+    return True
+  except:
+    return False
+
+def do_eval(exp):
+    exp_w_subs = []
+    for word in exp.split():
+        if is_op(word) or is_float(word):
+            exp_w_subs.append(word)
+        else:
+            vals = env.get(word, None)
+            if vals == None:
+                return "ERROR: No variable named \"" + word + "\""
+            elif not all(is_float, vals):
+                return "ERROR: Invalid variable value (all must be numeric): \"" + str(vals) + "\""
+            elif 
+            else:
+                exp_w_subs.append(val)
+
+    # eprint(exp_w_subs)
+
+    return eval(' '.join(exp_w_subs))
+
+########
+# Main #
+########
+
+# Get contents of file
+lines = sys.stdin.read().split('\n')
+
+# First pass: get variables
+for line in lines:
+    m = re.compile('^\s*(.*)\s*:.*>\s*(.*)$').match(line)
+    if m:
+        name = m.group(1)
+        val = m.group(2)
+
+        if not env.get(name, None):
+            env[name] = []
+        env[name].append(val)
+
+# eprint(env, end = '')
+
+try:
+    splitPoint = next(filter(lambda e: e[1].strip() == "# STORAGE", enumerate(lines)))[0]
+except:
+    splitPoint = -1
+
+if splitPoint == -1:
+    body = lines
+    storage = []
+else:
+    body = lines[0:splitPoint]
+    storage = lines[splitPoint+1:]
+
+# eprint(body)
+# eprint(storage)
+
+malformed_storage = False
+try:
+    cached_exps = yaml.safe_load('\n'.join(storage)) or {}
+except:
+    eprint("Error: Malformed STORAGE section")
+    malformed_storage = True
+    cached_exps = {}
+
+for line in body:
+    print(
+        re.sub(
+            r'^(\s*)(.*)\s*:(.)>\s*(.*)$',
+            do_eval_in_sub,
+            line
+        )
+    )
+
+if malformed_storage:
+    print()
+    print("# MALFORMED STORAGE BU")
+    print(''.join(storage))
+
+# WARNING: STORAGE must be the last section of the doc!!
+if len(cached_exps) > 0:
+    print("# STORAGE", end = '\n\n')
+    print(yaml.dump(cached_exps))
