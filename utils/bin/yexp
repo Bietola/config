@@ -18,12 +18,12 @@ lines = []
 #######################
 
 # Warning: First capture group of these must be the indent
-keyval_pair_re = re.compile('^(\s*)(.*)\s*:(.*>)?\s*(.*)$')
-eval_pair_re = re.compile('^(\s*)(.*)\s*:(.)>\s*(.*)$')
+keyval_pair_re = re.compile('^(\s*)(.*?)\s*:(.>)?\s*(.*)$')
+new_subscope_re = re.compile('^(\s*)(.*?):\s*$')
 
-new_subscope_re = re.compile('^\s*(.*):\s*$')
 whitespace_re = re.compile('^\s*$')
 list_ele_re = re.compile('^\s*-.*$')
+heading_re = re.compile('^#.*$')
 
 ####################
 # Helper functions #
@@ -66,11 +66,12 @@ def dict_get_w_dotted_key(d, s):
 def do_eval_in_sub(scope, m):
     indent = m.group(1)
     name = m.group(2)
-    control_char = m.group(3)
+    control_seq = m.group(3)
     exp = m.group(4)
 
     str_key = indent + name
     name = add_scope(scope, name)
+    control_char = control_sequence[0] # e.g.: from "E>" to "E"
 
     if control_char == "$":
         dict_add_dotted_str(cached_exps, name, exp)
@@ -80,7 +81,7 @@ def do_eval_in_sub(scope, m):
     elif control_char == "#" or control_char == "S" or control_char == "E":
         if cached_exp := dict_get_w_dotted_key(cached_exps, name):
             if control_char == "#":
-                val = do_eval_interpolation(exp, scope)
+                val = do_eval_interpolation(cached_exp, scope)
             elif control_char == "S":
                 val = cached_exp
             elif control_char == "E":
@@ -122,7 +123,9 @@ def do_eval(exp, scope):
         if is_op(word) or is_float(word):
             exp_w_subs.append(word)
         else:
-            if word[0] == '.': word = add_scope(scope, word[1:])
+            if word[0] == '.':
+                word = add_scope(scope, word[1:])
+
             val = dict_get_w_dotted_key(env, word)
             if val == None:
                 return "Error: No variable named \"" + word + "\""
@@ -137,26 +140,43 @@ def do_eval(exp, scope):
 
     return eval(' '.join(exp_w_subs))
 
-INDENT_UNIT = 4
-def update_scope_and_then(scope, cur_scope_lv, passthrough_re):
+def update_scope_and_then(scope, old_scope_lv, linenum, passthrough_re):
+    indent_lv = 0
+    new_subscope = ""
+    just_augmented_scope = False
+    and_then = None
+
     if m := new_subscope_re.match(line):
-        scope.append(m.group(1))
-        cur_scope_lv += 1
-        return None
+        indent_lv = len(m.group(1))
+        new_subscope = m.group(2)
 
-    if m := passthrough_re.match(line):
-        ident_lv = m.group(1)
+        just_augmented_scope = True
+        and_then = None
 
-        line_scope_lv = int(len(ident_lv) / INDENT_UNIT)
-        if line_scope_lv > cur_scope_lv:
-            pass
-        elif line_scope_lv < cur_scope_lv:
-            scope = scope[:line_scope_lv]
-        else:
-            pass
-        cur_scope_lv = line_scope_lv
+    elif m := passthrough_re.match(line):
+        indent_lv = len(m.group(1))
+        new_subscope = ""
 
-        return m
+        and_then = m
+
+    new_scope_lv = int(indent_lv / update_scope_and_then.INDENT_UNIT)
+    lv_change = new_scope_lv - old_scope_lv
+
+    just_previously_augmented_scope = update_scope_and_then.just_previously_augmented_scope
+    # TODO: Check why this does not work
+    # if not just_previously_augmented_scope:
+    #     assert lv_change <= 0, "Indentation error at line " + str(linenum)
+    update_scope_and_then.just_previously_augmented_scope = just_augmented_scope
+
+    if lv_change < 0 or (lv_change == 0 and just_previously_augmented_scope):
+        scope = scope[:new_scope_lv]
+
+    if len(new_subscope) != 0: scope.append(new_subscope)
+    
+    return and_then, scope, new_scope_lv
+# STATICS
+update_scope_and_then.just_previously_augmented_scope = False
+update_scope_and_then.INDENT_UNIT = 4
 
 ########
 # Main #
@@ -168,6 +188,7 @@ lines = sys.stdin.read().split('\n')
 # First pass: get variables
 cur_scope_lv = 0
 scope = []
+just_augmented_scope = False
 for [linenum, line] in enumerate(lines):
     if whitespace_re.match(line):
         continue
@@ -175,7 +196,11 @@ for [linenum, line] in enumerate(lines):
     if list_ele_re.match(line):
         continue
 
-    if m := update_scope_and_then(scope, cur_scope_lv, keyval_pair_re):
+    if heading_re.match(line):
+        continue
+
+    m, scope, cur_scope_lv = update_scope_and_then(scope, cur_scope_lv, linenum, keyval_pair_re)
+    if m:
         name = m.group(2)
         val = m.group(4)
 
@@ -217,17 +242,19 @@ except:
 
 scope = []
 cur_scope_lv = 0
-for line in body:
-    if whitespace_re.match(line):
+for [linenum, line] in enumerate(body):
+    if whitespace_re.match(line) or list_ele_re.match(line) or heading_re.match(line):
         print(line)
         continue
 
-    if list_ele_re.match(line):
-        print(line)
-        continue
+    m, scope, cur_scope_lv = update_scope_and_then(scope, cur_scope_lv, linenum, keyval_pair_re)
 
-    if m := update_scope_and_then(scope, cur_scope_lv, eval_pair_re):
-        print(do_eval_in_sub(scope, m))
+    if m:
+        control_sequence = m.group(3)
+        if control_sequence:
+            print(do_eval_in_sub(scope, m))
+        else:
+            print(line)
     else:
         print(line)
 
