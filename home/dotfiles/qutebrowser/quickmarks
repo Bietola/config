@@ -121,3 +121,5 @@ virtualbox-share-folder https://help.ubuntu.com/community/VirtualBox/SharedFolde
 xmobar-docs-status-info-options https://hackage.haskell.org/package/xmonad-contrib-0.16/docs/src/XMonad.Hooks.DynamicLog.html#PP
 python3-doc https://docs.python.org/3/index.html
 dnd-modifiers https://dnd5e.info/using-ability-scores/ability-scores-and-modifiers/
+apl-wiki https://aplwiki.com/LearnMoreApl/FurtherTopics
+apl-chatroom https://chat.stackexchange.com/rooms/52405/the-apl-orchard

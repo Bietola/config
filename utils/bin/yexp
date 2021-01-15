@@ -1,9 +1,15 @@
-#! /usr/bin/env nix-shell
-#! nix-shell -i python -p python39 python39Packages.pyyaml
+#! /usr/bin/env python3
+
+# TODO: Find out a way to make go faster
+# /usr/bin/env nix-shell
+# nix-shell -i python -p python39 python39Packages.pyyaml
 
 import re
 import sys
-import yaml
+import json
+import contextlib
+import io
+from enum import Enum
 
 ###########
 # Globals #
@@ -24,6 +30,26 @@ new_subscope_re = re.compile('^(\s*)(.*?):\s*$')
 whitespace_re = re.compile('^\s*$')
 list_ele_re = re.compile('^\s*-.*$')
 heading_re = re.compile('^#.*$')
+
+###########
+# Classes #
+###########
+
+class ValType(Enum):
+    LITERAL = 1
+    EXPR = 2
+    ERROR = 3
+
+class Val:
+    def __init__(self, valType, val):
+        self.valType = valType
+        self.val = val
+
+    def __str__(self):
+        if self.valType == ValType.ERROR:
+            return str("Error: {}".format(self.val))
+        else:
+            return str(self.val)
 
 ####################
 # Helper functions #
@@ -94,7 +120,7 @@ def do_eval_in_sub(scope, m):
         return str_key + ":" + control_char + "> " + "Error: Unknown control character: " + control_char
 
 def is_op(s):
-    return (s == "+" or s == "-" or s == "/" or s == "*")
+    return (s == "+" or s == "-" or s == "/" or s == "*" or s == "(" or s == ")")
 
 def is_float(value):
   try:
@@ -113,32 +139,54 @@ def do_eval_interpolation(interpolated_str, scope):
 def do_eval_w_err(exp, scope):
     val = do_eval(exp, scope)
     if not val:
-        return "Error: No expression cached for " + name
+        return Val(ValType.ERROR, "No expression cached for " + name)
     else:
         return val
 
 def do_eval(exp, scope):
-    exp_w_subs = []
-    for word in exp.split():
-        if is_op(word) or is_float(word):
-            exp_w_subs.append(word)
-        else:
-            if word[0] == '.':
-                word = add_scope(scope, word[1:])
+    def sub_identifier(m):
+        anonymous_scope = m.group(1) != None
+        ident = m.group(2)
+        
+        if anonymous_scope:
+            ident = add_scope(scope, ident)
 
-            val = dict_get_w_dotted_key(env, word)
-            if val == None:
-                return "Error: No variable named \"" + word + "\""
-            elif type(val) is dict:
-                return "Error: " + word + " is a dictionary"
-            else:
-                while not is_float(val):
-                    val = str(do_eval(val, scope))
-                exp_w_subs.append(val)
+        val = dict_get_w_dotted_key(env, ident)
+        if val == None:
+            return Val(ValType.ERROR, "(No identifier named \"" + ident + "\")")
+        elif type(val) is dict:
+            return Val(ValType.ERROR, ident + " is a dictionary")
+        elif val.val == None:
+            return Val(ValType.ERROR, ident + " has a Null value")
+        elif val.valType == ValType.ERROR:
+            return val
+        elif val.valType == ValType.EXPR:
+            return do_eval_interpolation(val.val, scope)
+        elif val.valType == ValType.LITERAL:
+            # TODO: Do this only if necessary
+            dict_add_dotted_str(env, ident, val, False)
+            return val
+        else:
+            assert False, "Fatal: Unhandled branch"
+
+    exp = re.sub(
+        r'\$(\.)?([a-zA-Z\_][\w\-\.]*)\b',
+        lambda m: str(sub_identifier(m)),
+        exp
+    )
+
+    try:
+        stream = io.StringIO()
+        with contextlib.redirect_stdout(stream):
+            stmts = exp.split(';')
+            for stmt in stmts[:-1]:
+                exec(stmt.strip())
+            exec('print(str({}))'.format(stmts[-1]))
+        return eval(stream.getvalue().strip())
+    except Exception as e:
+        return str("EvalError(\"{}\")".format(e))
 
     # eprint(exp_w_subs)
-
-    return eval(' '.join(exp_w_subs))
 
 def update_scope_and_then(scope, old_scope_lv, linenum, passthrough_re):
     indent_lv = 0
@@ -185,29 +233,7 @@ update_scope_and_then.INDENT_UNIT = 4
 # Get contents of file
 lines = sys.stdin.read().split('\n')
 
-# First pass: get variables
-cur_scope_lv = 0
-scope = []
-just_augmented_scope = False
-for [linenum, line] in enumerate(lines):
-    if whitespace_re.match(line):
-        continue
-
-    if list_ele_re.match(line):
-        continue
-
-    if heading_re.match(line):
-        continue
-
-    m, scope, cur_scope_lv = update_scope_and_then(scope, cur_scope_lv, linenum, keyval_pair_re)
-    if m:
-        name = m.group(2)
-        val = m.group(4)
-
-        dict_add_dotted_str(env, add_scope(scope, name), val, True)
-
-eprint(env, end = '')
-
+# Split file into body and storage sections
 try:
     splitPoint = next(filter(lambda e: e[1].strip() == "# STORAGE", enumerate(lines)))[0]
 except:
@@ -220,16 +246,47 @@ else:
     body = lines[0:splitPoint]
     storage = lines[splitPoint+1:]
 
-# eprint(body)
-# eprint(storage)
-
+# Get cached expressions from STORAGE section at the end of the file
 malformed_storage = False
 try:
-    cached_exps = yaml.safe_load('\n'.join(storage)) or {}
+    cached_exps = json.loads('\n'.join(storage)) or {}
 except:
     eprint("Error: Malformed STORAGE section")
     malformed_storage = True
     cached_exps = {}
+
+# First pass: load environment (all variables) from body
+cur_scope_lv = 0
+scope = []
+just_augmented_scope = False
+for [linenum, line] in enumerate(body):
+    if whitespace_re.match(line):
+        continue
+
+    if list_ele_re.match(line):
+        continue
+
+    if heading_re.match(line):
+        continue
+
+    m, scope, cur_scope_lv = update_scope_and_then(scope, cur_scope_lv, linenum, keyval_pair_re)
+    if m:
+        name = m.group(2)
+        control_seq = m.group(3)
+        control_char = control_seq[0] if control_seq else None
+
+        if (control_char == '$'):
+            val = Val(ValType.EXPR, m.group(4))
+        elif (control_char == '#'):
+            val = Val(ValType.EXPR, dict_get_w_dotted_key(cached_exps, add_scope(scope, name)))
+        else:
+            val = Val(ValType.LITERAL, m.group(4))
+        dict_add_dotted_str(env, add_scope(scope, name), val, True)
+
+eprint(env, end = '')
+
+# eprint(body)
+# eprint(storage)
 
 # for line in body:
 #     print(
@@ -266,4 +323,4 @@ if malformed_storage:
 # WARNING: STORAGE must be the last section of the doc!!
 if len(cached_exps) > 0:
     print("# STORAGE", end = '\n\n')
-    print(yaml.dump(cached_exps))
+    print(json.dumps(cached_exps))

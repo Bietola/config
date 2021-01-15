@@ -102,6 +102,7 @@ in
     vlc
     ffmpeg
     zathura
+    krita
 
     # Looks
     redshift
