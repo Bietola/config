@@ -47,7 +47,7 @@ class Val:
 
     def __str__(self):
         if self.valType == ValType.ERROR:
-            return str("Error: {}".format(self.val))
+            return str("Error({})".format(self.val))
         else:
             return str(self.val)
 
@@ -132,16 +132,9 @@ def is_float(value):
 def do_eval_interpolation(interpolated_str, scope):
     return re.sub(
         r'\$\{(.*?)\}',
-        lambda m: str(do_eval_w_err(m.group(1), scope)),
+        lambda m: str(do_eval(m.group(1), scope)),
         interpolated_str
     )
-
-def do_eval_w_err(exp, scope):
-    val = do_eval(exp, scope)
-    if not val:
-        return Val(ValType.ERROR, "No expression cached for " + name)
-    else:
-        return val
 
 def do_eval(exp, scope):
     def sub_identifier(m):
@@ -161,7 +154,7 @@ def do_eval(exp, scope):
         elif val.valType == ValType.ERROR:
             return val
         elif val.valType == ValType.EXPR:
-            return do_eval_interpolation(val.val, scope)
+            return do_eval_interpolation(val.val, scope_of(ident))
         elif val.valType == ValType.LITERAL:
             # TODO: Do this only if necessary
             dict_add_dotted_str(env, ident, val, False)
@@ -182,11 +175,14 @@ def do_eval(exp, scope):
             for stmt in stmts[:-1]:
                 exec(stmt.strip())
             exec('print(str({}))'.format(stmts[-1]))
-        return eval(stream.getvalue().strip())
+        return Val(ValType.LITERAL, eval(stream.getvalue().strip()))
     except Exception as e:
-        return str("EvalError(\"{}\")".format(e))
+        return Val(ValType.ERROR, "EvalError({}) on Program({})".format(e, stmts))
 
     # eprint(exp_w_subs)
+
+def scope_of(ident):
+    return ident.split('.')[:-1]
 
 def update_scope_and_then(scope, old_scope_lv, linenum, passthrough_re):
     indent_lv = 0

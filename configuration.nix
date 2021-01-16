@@ -25,7 +25,7 @@ in
       # Machine-specific configuration
       machineConf.bootLoader
       # TODO: Find why this doesn't work (see todo.md)
-      # TODO: machineConf.makeSoundWork
+      machineConf.makeSoundWork
       machineConf.keyboard
       machineConf.networking
 

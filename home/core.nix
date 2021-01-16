@@ -104,6 +104,9 @@ in
     zathura
     krita
 
+    # Music
+    audacity
+
     # Looks
     redshift
     feh
@@ -184,8 +187,8 @@ in
       sudo = "sudo ";
 
       # Automated way to edit automated config
-      edit-config-dir = "cd /etc/nixos";
-      edit-sys-config = "$EDITOR /etc/nixos/configuration.nix";
+      edit-config-dir = "cd /etc/nixos; sudo su";
+      edit-config-file = "sudo $EDITOR /etc/nixos/configuration.nix";
       edit-home-core = "$EDITOR /etc/nixos/home/core.nix";
       edit-dots = "cd /etc/nixos/home/dotfiles";
       edit-todo = "$EDITOR /etc/nixos/todo.md";
@@ -200,11 +203,18 @@ in
       ehp = "edit-home-pkgs";
       eha = "edit-home-aliases";
       ega = "edit-git-aliases";
-      ec = "edit-sys-config";
+      ecf = "edit-config-file";
+      ecd = "edit-config-dir";
+
+      # Build configuration
+      fsw = "sudo nixos-rebuild switch";
+      ssw = "sudo nix-channel --update; sudo nixos-rebuild --upgrade switch";
+      fbt = "sudo nixos-rebuild boot";
+      sbt = "sudo nix-channel --update; sudo nixos-rebuild --upgrade boot";
 
       # Better defaults
       ls = "ls --color=auto";
-      xclip = "xclip -selection clipboard";
+      clip = "xclip -selection clipboard";
 
       # Utilities
       cpp = "rsync -ah --progress";
