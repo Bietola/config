@@ -1,4 +1,4 @@
-{ pkgs, username, homeDirectory }:
+{ pkgs, username, homeDirectory, machineConf }:
 
 ############################
 # Custom package snapshots #
@@ -63,7 +63,7 @@ in
   # home.stateVersion = "21.03";
 
   # Packages
-  home.packages = with pkgs; [
+  home.packages = let rawPkgsList = with pkgs; [
     # Basic utils
     wget
     git
@@ -144,6 +144,10 @@ in
     qutebrowser
   ]);
 
+  # Remove machine ignored packages
+  in let isNotIgnored = pkg: !(builtins.elem pkg machineConf.homeCore.ignoredPackages);
+    in builtins.filter isNotIgnored rawPkgsList;
+
   ############
   # XSession #
   ############
@@ -186,6 +190,10 @@ in
       # Hacks
       sudo = "sudo ";
 
+      # Tweaking nixos is hard enough without having to type this abhorrent thing everytime...
+      reb = "sudo nixos-rebuild switch";
+      rebup = "sudo nixos-rebuild --upgrade swtich";
+
       # Automated way to edit automated config
       edit-config-dir = "cd /etc/nixos; sudo su";
       edit-config-file = "sudo $EDITOR /etc/nixos/configuration.nix";
@@ -199,6 +207,7 @@ in
       edit-git-aliases = makeOpenAndSearchAlias "programs.git" 2;
 
       # Even faster ways to edit configuration
+      ecd = "edit-config-dir";
       eh = "edit-home-core";
       ehp = "edit-home-pkgs";
       eha = "edit-home-aliases";

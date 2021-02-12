@@ -12,7 +12,6 @@ let
 
   # `machineConf` contains machine-specific settings
   machineName = (import ./machine/machine.nix).machine;
-  machineConf = import "/etc/nixos/machine/${machineName}.nix";
 
   mkHome = import ./home/core.nix;
 in
@@ -29,6 +28,9 @@ in
       machineConf.keyboard
       machineConf.networking
 
+      # This was found on winvm... TODO: Decide weather it can be deleted
+      # import "machine/${machineName}.nix"
+
       # Home manager
       (import "${home-manager}/nixos")
     ];
@@ -41,6 +43,7 @@ in
   home-manager.users = {
     root = mkHome {
       pkgs = pkgs;
+      machineConf = machineConf;
 
       username = "root";
       homeDirectory = "/root";
@@ -48,6 +51,7 @@ in
 
     dincio = mkHome {
       pkgs = pkgs;
+      machineConf = machineConf;
 
       username = "dincio";
       homeDirectory = "/home/dincio";
@@ -115,7 +119,7 @@ in
     # NB. Most packages are managed by home-manager
   ] ++
   # Packages needed for the machine
-  machineConf.extraPackages pkgs;
+  machineConf.extraSysPackages;
 
   # Kill Luke Smith
   # NOTE: Actually not needed anymore

@@ -1,5 +1,16 @@
+{ lib, pkgs, config, ... }:
+
+with lib;
+
+let
+  cfg = config.machine;
 {
-  bootLoader = { lib, ... }: {
+  options.machineConf = {
+    # No options for now
+  };
+
+  # TODO: Use something better than mkIf
+  config = mkIf true {
     # Use the GRUB 2 boot loader.
     boot.loader.grub.enable = true;
     boot.loader.grub.version = 2;
@@ -8,9 +19,7 @@
     # boot.loader.efi.efiSysMountPoint = "/boot/efi";
     # Define on which hard drive you want to install Grub.
     boot.loader.grub.device = "/dev/sda"; # or "nodev" for efi only
-  };
 
-  keyboard = { lib, pkgs, ... }: {
     # Configure keymap in X11
     services.xserver.layout = "it";
     services.xserver.displayManager.sessionCommands =
@@ -27,9 +36,6 @@
           ! add Lock = Caps_Lock
         '';
       in "${pkgs.xorg.xmodmap}/bin/xmodmap ${myCustomLayout}";
-  };
-
-  networking = {
 
     # The global useDHCP flag is deprecated, therefore explicitly set to false here.
     # Per-interface useDHCP will be mandatory in the future, so this generated config
@@ -41,12 +47,21 @@
     # networking.proxy.default = "http://user:password@proxy:port/";
     # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
+    # Other useful machine configuration variables
+    machineConf = {
+      extraSysPackages = with pkgs; [
+        # Nothing for now
+      ];
+
+      extraPackages = with pkgs; [
+        # Nothing for now
+      ];
+
+      ignoredPackages = with pkgs; [
+        # No need for a virtualbox inside another virtualbox...
+        # (Also, compilation is lengthy)
+        virtualbox
+      ];
+    };
   };
-
-
-  terminal.font.size = 9;
-
-  extraPackages = pkgs: with pkgs; [
-    # Nothing for now
-  ];
 }
