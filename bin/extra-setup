@@ -278,3 +278,6 @@ lncfge :c nvim/UltiSnips
 
 # rclone
 lncfge :c rclone
+
+# xfce4
+lncfge :c xfce4

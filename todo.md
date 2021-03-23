@@ -10,8 +10,6 @@
  
 ## Other things
 
-### Prepare for AOC
-
 #### Setup backup
 - Try to upload dummy file to onedrive w/ rclone
 - Try local manual backup w/ restic
@@ -34,6 +32,7 @@
 ### Things to do in better times
 
 - Rewrite `c:/bin/extra-setup` in Haskell
+    - Take inspiration from the updated `setup` script in the `manjaro-config` repository
     - Add hardlink and backup functionality
         - Test them
 - Write central `c:/bin/setup.hs` which does **all the setup**. Also document eventual manual setup instructions (such as importing gpg keys).

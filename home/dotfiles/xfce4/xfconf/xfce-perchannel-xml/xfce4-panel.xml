@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<channel name="xfce4-panel" version="1.0">
+  <property name="panels" type="uint" value="1">
+    <property name="panel-0" type="empty">
+      <property name="position" type="string" value="p=8;x=720;y=884"/>
+      <property name="length" type="uint" value="100"/>
+      <property name="position-locked" type="bool" value="true"/>
+      <property name="plugin-ids" type="array">
+        <value type="int" value="8"/>
+        <value type="int" value="3"/>
+        <value type="int" value="7"/>
+        <value type="int" value="1"/>
+        <value type="int" value="4"/>
+        <value type="int" value="6"/>
+        <value type="int" value="9"/>
+        <value type="int" value="5"/>
+        <value type="int" value="2"/>
+      </property>
+      <property name="role" type="string" value="xfce4-panel-12965750720"/>
+      <property name="length-adjust" type="bool" value="true"/>
+      <property name="background-style" type="uint" value="0"/>
+      <property name="size" type="uint" value="36"/>
+      <property name="mode" type="uint" value="0"/>
+      <property name="autohide-behavior" type="uint" value="0"/>
+      <property name="disable-struts" type="bool" value="false"/>
+      <property name="icon-size" type="uint" value="28"/>
+    </property>
+  </property>
+  <property name="plugins" type="empty">
+    <property name="plugin-2" type="string" value="actions">
+      <property name="appearance" type="uint" value="0"/>
+      <property name="invert-orientation" type="bool" value="false"/>
+      <property name="items" type="array">
+        <value type="string" value="-logout-dialog"/>
+        <value type="string" value="-switch-user"/>
+        <value type="string" value="-separator"/>
+        <value type="string" value="+logout"/>
+        <value type="string" value="-lock-screen"/>
+        <value type="string" value="-hibernate"/>
+        <value type="string" value="-suspend"/>
+        <value type="string" value="-restart"/>
+        <value type="string" value="-shutdown"/>
+      </property>
+    </property>
+    <property name="plugin-4" type="string" value="pager"/>
+    <property name="plugin-6" type="string" value="systray">
+      <property name="names-visible" type="array">
+        <value type="string" value="pnmixer"/>
+        <value type="string" value="manjaro-settings-manager-daemon"/>
+        <value type="string" value="networkmanager applet"/>
+        <value type="string" value="orage"/>
+        <value type="string" value="pamac-tray"/>
+        <value type="string" value="blueman-applet"/>
+        <value type="string" value="clipman"/>
+        <value type="string" value="xfce4-power-manager"/>
+        <value type="string" value="xnoise"/>
+      </property>
+      <property name="show-frame" type="bool" value="false"/>
+      <property name="names-ordered" type="array">
+        <value type="string" value="orage"/>
+        <value type="string" value="thunar"/>
+        <value type="string" value="talon"/>
+        <value type="string" value="xfce terminal"/>
+        <value type="string" value="msm notifier"/>
+        <value type="string" value="blueman-tray"/>
+        <value type="string" value="xfce4-power-manager"/>
+        <value type="string" value="networkmanager applet"/>
+        <value type="string" value="clipman"/>
+        <value type="string" value="pamac-tray"/>
+      </property>
+      <property name="known-legacy-items" type="array">
+        <value type="string" value="onboard"/>
+        <value type="string" value="xfce terminal"/>
+        <value type="string" value="xfce4-power-manager"/>
+        <value type="string" value="networkmanager applet"/>
+        <value type="string" value="clipman"/>
+        <value type="string" value="pamac-tray"/>
+      </property>
+      <property name="known-items" type="array">
+        <value type="string" value="discord1"/>
+        <value type="string" value="kazam"/>
+        <value type="string" value="Cadence"/>
+        <value type="string" value="Skype1"/>
+        <value type="string" value="hp-systray"/>
+        <value type="string" value="steam"/>
+        <value type="string" value="SimpleScreenRecorder"/>
+        <value type="string" value="TelegramDesktop"/>
+        <value type="string" value="qutebrowser"/>
+        <value type="string" value="vlc"/>
+        <value type="string" value="Talon"/>
+        <value type="string" value="MSM Notifier"/>
+        <value type="string" value="blueman"/>
+      </property>
+    </property>
+    <property name="plugin-3" type="string" value="tasklist">
+      <property name="grouping" type="uint" value="1"/>
+    </property>
+    <property name="plugin-7" type="string" value="separator">
+      <property name="expand" type="bool" value="true"/>
+      <property name="style" type="uint" value="0"/>
+    </property>
+    <property name="plugin-9" type="string" value="pulseaudio">
+      <property name="enable-keyboard-shortcuts" type="bool" value="true"/>
+      <property name="mpris-players" type="string" value="audacious;chromium.instance10025;chromium.instance18314;chromium.instance1918;chromium.instance24142;chromium.instance3202;chromium.instance3314;chromium.instance4531;chromium.instance5344;chromium.instance6621;firefox.instance10222;firefox.instance10643;firefox.instance11153;firefox.instance11816;firefox.instance12210;firefox.instance2081;firefox.instance22635;firefox.instance49676;firefox.instance5825;qutebrowser.instance10309;qutebrowser.instance11638;qutebrowser.instance11748;qutebrowser.instance11898;qutebrowser.instance13170;qutebrowser.instance13242;qutebrowser.instance15206;qutebrowser.instance1522;qutebrowser.instance1527;qutebrowser.instance1559;qutebrowser.instance1590;qutebrowser.instance1592;qutebrowser.instance1632;qutebrowser.instance1640;qutebrowser.instance1660;qutebrowser.instance1664;qutebrowser.instance1672;qutebrowser.instance1687;qutebrowser.instance1689;qutebrowser.instance1697;qutebrowser.instance1702;qutebrowser.instance1709;qutebrowser.instance1716;qutebrowser.instance1745;qutebrowser.instance1759;qutebrowser.instance1760;qutebrowser.instance1761;qutebrowser.instance1772;qutebrowser.instance17755;qutebrowser.instance1778;qutebrowser.instance1787;qutebrowser.instance1799;qutebrowser.instance18035;qutebrowser.instance1804;qutebrowser.instance1810;qutebrowser.instance1816;qutebrowser.instance1818;qutebrowser.instance1846;qutebrowser.instance1849;qutebrowser.instance1850;qutebrowser.instance18580;qutebrowser.instance1861;qutebrowser.instance1871;qutebrowser.instance1872;qutebrowser.instance1874;qutebrowser.instance1875;qutebrowser.instance1882;qutebrowser.instance1884;qutebrowser.instance1887;qutebrowser.instance1925;qutebrowser.instance1956;qutebrowser.instance1967;qutebrowser.instance1972;qutebrowser.instance20065;qutebrowser.instance2009;qutebrowser.instance2028;qutebrowser.instance2066;qutebrowser.instance2083;qutebrowser.instance2116;qutebrowser.instance2118;qutebrowser.instance2136;qutebrowser.instance2163;qutebrowser.instance2166;qutebrowser.instance2203;qutebrowser.instance2232;qutebrowser.instance2245;qutebrowser.instance2292;qutebrowser.instance2294;qutebrowser.instance2331;qutebrowser.instance2363;qutebrowser.instance2443;qutebrowser.instance2500;qutebrowser.instance2548;qutebrowser.instance2568;qutebrowser.instance2589;qutebrowser.instance2869;qutebrowser.instance2952;qutebrowser.instance29664;qutebrowser.instance3007;qutebrowser.instance3127;qutebrowser.instance3193;qutebrowser.instance3223;qutebrowser.instance3340;qutebrowser.instance3383;qutebrowser.instance3474;qutebrowser.instance3497;qutebrowser.instance3793;qutebrowser.instance3931;qutebrowser.instance4240;qutebrowser.instance4313;qutebrowser.instance46487;qutebrowser.instance5108;qutebrowser.instance5313;qutebrowser.instance6020;qutebrowser.instance6187;qutebrowser.instance7064;qutebrowser.instance7195;qutebrowser.instance7338;qutebrowser.instance8020;qutebrowser.instance8182;vlc;vlc.instance10830;vlc.instance16747;vlc.instance17149;vlc.instance17381;vlc.instance18010;vlc.instance18074;vlc.instance19965;vlc.instance20008;vlc.instance20059;vlc.instance20107;vlc.instance20165;vlc.instance2152;vlc.instance2635;vlc.instance2676;vlc.instance81720;vlc.instance81858"/>
+    </property>
+    <property name="plugin-8" type="string" value="whiskermenu"/>
+    <property name="plugin-5" type="string" value="clock"/>
+    <property name="plugin-1" type="string" value="showdesktop"/>
+  </property>
+  <property name="configver" type="int" value="2"/>
+</channel>
