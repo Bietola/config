@@ -25,7 +25,7 @@ in
       # Machine-specific configuration
       machineConf.bootLoader
       # TODO: Find why this doesn't work (see todo.md)
-      machineConf.makeSoundWork
+      # machineConf.makeSoundWork
       machineConf.keyboard
       machineConf.networking
 
@@ -113,9 +113,7 @@ in
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     # NB. Most packages are managed by home-manager
-  ] ++
-  # Packages needed for the machine
-  machineConf.extraPackages pkgs;
+  ];
 
   # Kill Luke Smith
   # NOTE: Actually not needed anymore
@@ -125,9 +123,9 @@ in
   virtualisation.docker.enable = true;
 
   # Enable virtualbox
-  virtualisation.virtualbox.host.enable = true;
-  virtualisation.virtualbox.host.enableExtensionPack = true;
-  users.extraGroups.vboxusers.members = [ "root" "dincio" ];
+  # virtualisation.virtualbox.host.enable = true;
+  # virtualisation.virtualbox.host.enableExtensionPack = true;
+  # users.extraGroups.vboxusers.members = [ "root" "dincio" ];
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.

@@ -294,59 +294,6 @@ in
     enable = true;
   };
 
-  # vim
-  programs.neovim = {
-    enable = true;
-    vimAlias = true;
-    plugins = with pkgs.vimPlugins; [
-      # Basic
-      vimwiki
-      vim-vsnip
-      # TODO: Make Custom: dsf-vim
-      vim-exchange
-      vim-tabpagecd
-      delimitMate
-      vim-surround
-      vim-dispatch
-      vim-commentary
-      vim-fugitive
-      vim-vinegar
-      vim-unimpaired
-      vim-repeat
-      sideways-vim
-      ctrlp-vim
-
-      # Cosmetic
-      # TODO: Fix characters: vim-airline
-      # vim-airline-themes
-
-      # Snippets
-      ultisnips
-
-      # Hypertext
-      vim-orgmode
-
-      # Programming
-      vim-slime
-      coc-nvim
-      # Nix
-      vim-nix
-      # Rust
-      # TODO: Make Custom: ron-vim
-      # Lisp dialects.
-      vim-sexp
-      vim-sexp-mappings-for-regular-people
-
-      # Colorschemes.
-      # sacredforest-vim
-      iceberg-vim
-
-      # Poli.
-      # TODO: Make custom: vim-alloy
-    ];
-    extraConfig = builtins.readFile ./dotfiles/nvim/init.vim;
-  };
-
   # xmonad
   xsession.windowManager.xmonad = {
     enable = true;

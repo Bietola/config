@@ -1,11 +1,9 @@
 {
-  bootLoader = { lib, ... }: {
+  bootLoader = { ... }: {
     # Use the GRUB 2 boot loader.
     boot.loader.grub.enable = true;
     boot.loader.grub.version = 2;
-    # boot.loader.grub.efiSupport = true;
-    # boot.loader.grub.efiInstallAsRemovable = true;
-    # boot.loader.efi.efiSysMountPoint = "/boot/efi";
+
     # Define on which hard drive you want to install Grub.
     boot.loader.grub.device = "/dev/sda"; # or "nodev" for efi only
   };
@@ -30,7 +28,6 @@
   };
 
   networking = {
-
     # The global useDHCP flag is deprecated, therefore explicitly set to false here.
     # Per-interface useDHCP will be mandatory in the future, so this generated config
     # replicates the default behaviour.
@@ -40,13 +37,21 @@
     # Configure network proxy if necessary
     # networking.proxy.default = "http://user:password@proxy:port/";
     # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
-
   };
 
+  terminal.font.size = 12;
 
-  terminal.font.size = 9;
-
-  extraPackages = pkgs: with pkgs; [
+  # extraSysPackages = with pkgs; [
     # Nothing for now
-  ];
+  # ];
+
+  # extraPackages = with pkgs; [
+    # Nothing for now
+  # ];
+
+  # ignoredPackages = with pkgs; [
+    # No need for a virtualbox inside another virtualbox...
+    # (Also, compilation is lengthy)
+    # virtualbox
+  # ];
 }
